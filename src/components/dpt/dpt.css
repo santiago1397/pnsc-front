@@ -1,0 +1,19 @@
+.dptcontainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    
+}
+
+.dptcontainer > *{
+    box-sizing: border-box;
+    border: none;
+    font-weight: bold;
+    font-size: 12px;
+    flex: 1;
+    padding: 10px 5px;
+    border-radius: 5px;
+}

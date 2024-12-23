@@ -1,0 +1,38 @@
+.activities-top{
+    display: flex;
+    padding: 30px 0px;
+    justify-content: space-between;
+}
+
+.activities-top h1{
+
+}
+
+.activities-top button{
+    margin-right: 20px;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.activity-list{
+
+}
+
+.activity-item{
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    border: 1px solid black;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+}
+
+.pagination{
+    border: 1px solid black;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+}

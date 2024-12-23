@@ -1,0 +1,64 @@
+.place-modal-visit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 95%;
+    height: 80%;
+    max-width: 2000px;
+    background-color: #e7decc;
+    border: 1px solid white;
+    border-radius: 25px;
+    overflow: hidden;
+    overflow-y: auto;
+    padding: 10px 20px;
+}
+
+.visit-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.twofields {
+    display: flex;
+    justify-content: space-between;
+}
+
+.visits-divider {
+    height: 5px;
+    border-radius: 20px;
+    background-color: #660033;
+    margin: 10px 0px
+}
+
+.student {
+    margin-top: 4px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 4px;
+}
+
+.students-errors{
+    font-size: 13px;
+    color: red;
+}
+
+.students-responsive-table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.students-responsive-table td,
+.students-responsive-table th {
+    padding: 5px;
+    border: 1px solid black;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.smaller-column {
+    width: 50px;
+    /* Adjust the width as needed */
+}

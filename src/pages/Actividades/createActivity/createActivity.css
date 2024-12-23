@@ -1,0 +1,93 @@
+.place-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    max-width: 400px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 25px;
+    overflow: hidden;
+    padding: 10px 50px;
+}
+
+
+.activities-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.activity-name-input{
+    width: 100%;
+}
+
+.activity-name-input input{
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.activity-desc-input textarea{
+    width: 100%;
+    resize: none;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.add-subcategories-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px 4px;
+}
+
+.add-subcategory{
+    padding: 4px;
+    border-radius: 5px;
+    color: white;
+    border: 1px solid #2196f3;
+    background-color: #2196f3;
+    cursor: pointer;
+}
+
+.add-activity-btn{
+    width: 100%;
+    padding: 6px;
+    font-weight: bold;
+    background-color: #1565c0;
+    color: white;
+    border: 1px solid #1565c0;
+    border-radius: 5px;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.add-activity-btn:hover{
+    background-color: #2196f3;
+}
+
+.subcategory-wrapper{
+    display: flex;
+    padding: 8px 2px 5px 2px;
+    margin-top: 5px;
+    border-bottom: 1px solid black;
+}
+
+.flex1 {
+    flex: 1;
+}
+
+.subcategory-wrapper input{
+    width: 80%;
+}
+
+
+.category-error{
+    color: red;
+}

@@ -1,0 +1,116 @@
+.place-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    max-width: 900px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 25px;
+    overflow: hidden;
+    padding: 10px 50px;
+}
+
+.schedule-place-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    max-width: 500px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 25px;
+    overflow: hidden;
+    padding: 10px 50px;
+    overflow: auto;
+}
+
+.schedule-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.schedule-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.schedule-group input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.schedule-group select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.site-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+.site-group input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.divider {
+    margin: 30px 0px;
+    height: 2px;
+    background-color: blue;
+}
+
+.category-style {
+    display: flex;
+    gap: 10px;
+}
+
+.category-style>* {
+    flex: 1;
+}
+
+.adding-schools {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.school-section {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+    
+}
+
+.school-section-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.school-name-input input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.error-message{
+    color: red;
+}

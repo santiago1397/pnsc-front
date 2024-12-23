@@ -1,0 +1,123 @@
+.login{
+    display: flex;
+    
+}
+
+.login-left-section{
+    min-width: 400px;
+    height: 100vh; 
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.login-logo{
+    margin-top: 100px;
+    margin-bottom: 50px;
+    width: 80%;
+}
+
+.login-right-section{
+    flex:1;
+    height: 100vh; 
+    background-image: url('Imagen_SemilleroC_LoginV03_02.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+
+/* .wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.login_box {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+} */
+
+.login-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-header span {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.imput-box {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: #007bff;
+}
+
+.label {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  color: #999;
+  transition: 0.2s ease-in-out;
+}
+
+.input-field:focus ~ .label,
+.input-field:not(:placeholder-shown) ~ .label {
+  top: -10px;
+  font-size: 12px;
+  color: #007bff;
+}
+
+.icon {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  color: #999;
+}
+
+.button-wrapper {
+  text-align: center;
+}
+
+.input-submit {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.input-submit:hover {
+  background-color: #0069d9;
+}
+
+.loader {
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
