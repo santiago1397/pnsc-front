@@ -8,6 +8,7 @@ import Users from './pages/Users/Users.jsx';
 import Visitas from './pages/Visitas/Visitas.jsx';
 import Agendar from './pages/Agendar/Agendar.jsx';
 import Actividades from './pages/Actividades/Actividades.jsx';
+import Reportes from './pages/Reportes/Reportes.jsx';
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
               <Route path="/visits" element={<Visitas />} />
               <Route path="/schedule" element={<Agendar />} />
               <Route path="/activities" element={<Actividades />} />
+              <Route path="/reports" element={<Reportes />} />
 
             </Route>
           </Routes>

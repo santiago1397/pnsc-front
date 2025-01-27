@@ -23,10 +23,11 @@
     max-width: 500px;
     background-color: white;
     border: 1px solid black;
-    border-radius: 25px;
+    border-radius: 10px;
     overflow: hidden;
     padding: 10px 50px;
     overflow: auto;
+    box-sizing: border-box;
 }
 
 .schedule-top {

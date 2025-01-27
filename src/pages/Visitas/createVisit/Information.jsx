@@ -47,29 +47,34 @@ export default function Information({ register, errors, setValue, getValues, arr
     setSubCategories(lmao[0].subcategories)
   }
 
+  //esta monda esta fea, hay que arreglarlo
   const handleScheduleSelected = (e) => {
-    const index = e.target.value
-    console.log(
-      schedules[index].activityPlace
-    )
-    setFlag(true)
+    const index = e.target.value 
+
+
+    
+    setFlag(!flag)
     setValue("agendedLink", schedules[index]._id)
     setValue("activityName", schedules[index].activityName)
     setValue("activityPlace", schedules[index].activityPlace)
     setValue("activityDate", new Date(schedules[index].activityDate).toISOString().split('T')[0])
-    setValue("schools", schedules[index].schools)
     setValue("ludicActivity", schedules[index].activity)
     setValue("subActivity", schedules[index].subActivity)
 
+    
+    const indexActivity = activities.findIndex((element) => element.name === (schedules[index].activity.name))    
+    setValue("ludicActivityAux", indexActivity)
 
-    setValue("ludicActivityAux", index)
-    console.log(schedules[index].activity.subcategories)
+    
     setSubCategories(schedules[index].activity.subcategories)
     setValue("activity", schedules[index].activity)
-
-    if(schedules[index].subActivity){
-
+    
+    //limpio el array y lo relleno
+    for (let i = 0; i < arraySchools.length; i++) {
+      removeSchools(0)
     }
+    setValue("schools", schedules[index].schools)
+
 
   }
 
@@ -277,8 +282,8 @@ export default function Information({ register, errors, setValue, getValues, arr
           Descripción de la actividad:
         </label>
         <div>
-          <textarea className="add-input-2" maxLength={300} type="text" placeholder='nombre de la actividad'
-            {...register("activityDesc", {
+          <textarea className="add-input-2" maxLength={300} type="text" placeholder='descripción de la actividad'
+            {...register("description", {
             })}
           />
 
@@ -291,7 +296,7 @@ export default function Information({ register, errors, setValue, getValues, arr
           Observaciones:
         </label>
         <div>
-          <textarea className="add-input-2" maxLength={300} type="text" placeholder='nombre de la actividad'
+          <textarea className="add-input-2" maxLength={300} type="text" placeholder='observaciones'
             {...register("observation", {
             })}
           />
@@ -373,6 +378,20 @@ export default function Information({ register, errors, setValue, getValues, arr
 
             </div>
           </div>
+
+          <div className="school-name-input">
+                <label>
+                  Tipo de institución:
+                </label>
+                <select className="" {...register(`schools.${index}.type`, {
+                  required: 'seleccione el rol',
+                  pattern: {}
+                })}>
+                  <option value="" disabled selected>Seleccione el tipo</option>
+                  <option key="private"  >Privado</option>
+                  <option key="public"  >Público</option>
+                </select>
+              </div>
 
           <div>
             <Dpt

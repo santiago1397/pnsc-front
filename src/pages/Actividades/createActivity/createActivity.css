@@ -5,12 +5,13 @@
     transform: translate(-50%, -50%);
     width: 80%;
     height: 80%;
-    max-width: 400px;
+    max-width: 600px;
     background-color: white;
     border: 1px solid black;
     border-radius: 25px;
-    overflow: hidden;
+    overflow: auto;
     padding: 10px 50px;
+    box-sizing: border-box;
 }
 
 

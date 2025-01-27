@@ -1,0 +1,44 @@
+.responsive-table-reportes {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-bottom: 10px;
+  flex: 1;
+  height: auto;
+}
+
+.responsive-table-reportes td {
+  padding: 4px;
+  border: 1px solid #ccc;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+
+}
+
+.responsive-table-reportes th:first-child {
+  min-width: 45px;
+  /* Primera columna con un ancho del 20% */
+  /* width: 75px; */
+}
+
+.responsive-table-reportes th:last-child {
+  width: 75px;
+}
+
+.responsive-table-reportes .small{
+  width: 70px;
+}
+
+
+.responsive-table-reportes th {
+  padding: 10px;
+  border: 1px solid #ccc;
+  word-wrap: break-word;
+}
+
+
+.graphs{
+  flex: 1;
+}

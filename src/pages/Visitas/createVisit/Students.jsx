@@ -2,8 +2,28 @@ import React, { useState, useEffect } from 'react'
 import Dpt from '../../../components/dpt/Dpt.jsx'
 import "./createVisit.css"
 import * as XLSX from 'xlsx';
+import { downloadExcel } from '../../../api/downloadFile.js';
+import DptTable from '../../../components/dpt/DptTable.jsx';
 
-export default function Students({ register, errors, arrayStudents, appendStudent, removeStudents, arraySchools }) {
+export default function Students({ register, errors, arrayStudents, appendStudent, removeStudents, arraySchools, setValue, getValues, handleCreateClose, setError }) {
+
+   var shirtSize_options = [12,13,14,15,16,"S","M","L","XL","XXL"]
+
+  function validateSchools(data) {
+    if (arraySchools.includes(data)) {
+      return 1
+    } else {
+      return 0
+    }
+  }
+
+  function isNumber(value) {
+    return !isNaN(value);
+  }
+
+  function validateGender(value) {
+    return !isNaN(value);
+  }
 
   const LoadStudents = async (e) => {
     const file = e.target.files[0];
@@ -15,8 +35,27 @@ export default function Students({ register, errors, arrayStudents, appendStuden
     const jsonData = XLSX.utils.sheet_to_json(worksheet);
     console.log(jsonData)
 
+
+
+
     for (let i = 0; i < jsonData.length; i++) {
       appendStudent({ ...jsonData[i] })
+    }
+
+    for (let i = 0; i < jsonData.length; i++) {
+      if (validateSchools(jsonData[i].school) === 0) {
+        setError(`students.${i}.school`, {
+          type: "manual",
+          message: "La escuela no esta registrada"
+        })
+      }
+
+      if (isNumber(jsonData[i].age) == false) {
+        setError(`students.${i}.age`, {
+          type: "manual",
+          message: "La edad debe ser un número"
+        })
+      }
     }
   }
 
@@ -26,8 +65,11 @@ export default function Students({ register, errors, arrayStudents, appendStuden
         <h4>
           Estudiantes Atendidos:
         </h4>
+        <button type="button" onClick={downloadExcel}>
+          Descargar formato de carga
+        </button>
 
-        <input type="file" onChange={(e) => LoadStudents(e)} />
+        <input type="file" accept=".xlsx,.ods" onChange={(e) => LoadStudents(e)} />
 
 
         <button type="button" onClick={() => appendStudent({})}>
@@ -39,11 +81,14 @@ export default function Students({ register, errors, arrayStudents, appendStuden
         <table className="students-responsive-table">
           <thead>
             <tr >
-              <th colspan="7">
+              <th colspan="8">
                 Datos estudiante:
               </th>
               <th colspan="6">
                 Datos representante:
+              </th>
+              <th colspan="3">
+                Datos vivienda:
               </th>
             </tr>
             <tr>
@@ -54,6 +99,7 @@ export default function Students({ register, errors, arrayStudents, appendStuden
               <th className="smaller-column">Edad</th>
               <th>Género</th>
               <th>Nivel Acaémico</th>
+              <th>Talla de camisa</th>
 
               <th>Cédula</th>
               <th>Nombres</th>
@@ -61,6 +107,11 @@ export default function Students({ register, errors, arrayStudents, appendStuden
               <th>Edad</th>
               <th>Parentesco</th>
               <th>Teléfono</th>
+
+
+              <th>Estado</th>
+              <th>Municipio</th>
+              <th>Parroquia</th>
             </tr>
             <tr>
 
@@ -88,6 +139,10 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                 <td>
                   <input style={{ width: "85px" }} {...register(`students.${index}.ci`, {
                     required: 'ingrese la cedula',
+                    pattern: {
+                      value: /^\d{7,13}$/,
+                      message: "ingrese cedula valida"
+                    }
                   })} placeholder='cédula' />
                   <div>
                     {errors?.students?.[index]?.ci && <span className="students-errors">{errors?.students?.[index]?.ci.message}</span>}
@@ -102,7 +157,7 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                   </div>
                 </td>
                 <td>
-                  <input {...register(`students.${index}.lastname`, {
+                  <input {...register(`students.${index}.lastName`, {
                     required: 'ingrese el apellido',
                   })} placeholder='apellidos' />
                   <div>
@@ -161,20 +216,47 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                     {errors?.students?.[index]?.grade && <span className="students-errors">{errors?.students?.[index]?.grade.message}</span>}
                   </div>
                 </td>
+
+                <td className="smaller-column">
+                  <select {...register(`students.${index}.shirtSize`, {
+                    validate: value => (value == undefined || value == "" || shirtSize_options.includes(value)) || "Seleccione una opcion valida"
+                  })} >
+                    <option value="" disabled selected>Seleccione</option>
+                    <option value="12" >12</option>
+                    <option value="13" >13</option>
+                    <option value="14" >14</option>
+                    <option value="15" >15</option>
+                    <option value="16" >16</option>
+                    <option value="S" >S</option>
+                    <option value="M" >M</option>
+                    <option value="L" >L</option>
+                    <option value="XL" >XL</option>
+                    <option value="XXL" >XXL</option>
+                  </select>
+                  <div>
+                    {errors?.students?.[index]?.shirtSize && <span className="students-errors">{errors?.students?.[index]?.shirtSize.message}</span>}
+                  </div>
+                </td>
+
                 <td>
-                  <input style={{ width: "85px" }} {...register(`students.${index}.representativeCI`)} />
+                  <input style={{ width: "85px" }} {...register(`students.${index}.representativeCI`,{
+                    pattern: {
+                      value: /^\d{7,8}$/,
+                      message: "ingrese cedula valida"
+                    }
+                  })} />
                   <div>
                     {errors?.students?.[index]?.representativeCI && <span className="students-errors">{errors?.students?.[index]?.representativeCI.message}</span>}
                   </div>
                 </td>
                 <td>
-                  <input {...register(`students.${index}.representativeName`)} />
+                  <input maxLength={50} {...register(`students.${index}.representativeName`)} />
                   <div>
                     {errors?.students?.[index]?.representativeName && <span className="students-errors">{errors?.students?.[index]?.representativeName.message}</span>}
                   </div>
                 </td>
                 <td>
-                  <input {...register(`students.${index}.representativeLastName`)} />
+                  <input maxLength={50} {...register(`students.${index}.representativeLastName`)} />
                   <div>
                     {errors?.students?.[index]?.representativeLastName && <span className="students-errors">{errors?.students?.[index]?.representativeLastName.message}</span>}
                   </div>
@@ -186,17 +268,32 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                   </div>
                 </td>
                 <td>
-                  <input style={{ width: "100px" }} {...register(`students.${index}.representativeKindred`)} />
+                  <input maxLength={50} style={{ width: "100px" }} {...register(`students.${index}.representativeKindred`)} />
                   <div>
                     {errors?.students?.[index]?.representativeKindred && <span className="students-errors">{errors?.students?.[index]?.representativeKindred.message}</span>}
                   </div>
                 </td>
                 <td>
-                  <input style={{ width: "85px" }} {...register(`students.${index}.representativePhone`)} />
+                  <input  style={{ width: "85px" }} {...register(`students.${index}.representativePhone`,{
+                    pattern: {
+                      value: /^\d{11,12}$/,
+                      message: "ingrese un numero valido"
+                    }
+                    
+                  })} />
                   <div>
                     {errors?.students?.[index]?.representativePhone && <span className="students-errors">{errors?.students?.[index]?.representativePhone.message}</span>}
                   </div>
                 </td>
+
+                {/* from here need to fix */}
+                <DptTable
+                  estado={`students.${index}.homeLocation.state`}
+                  municipio={`students.${index}.homeLocation.municipality`}
+                  parroquia={`students.${index}.homeLocation.parish`}
+                  setValue={setValue}
+                  getValues={getValues}
+                />
                 <td>
                   <button type="button" onClick={() => removeStudents(index)}>
                     Eliminar
@@ -390,6 +487,6 @@ export default function Students({ register, errors, arrayStudents, appendStuden
       ))*/}
 
 
-    </div>
+    </div >
   )
 }

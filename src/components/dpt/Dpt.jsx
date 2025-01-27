@@ -61,7 +61,7 @@ export default function Dpt({ estado, municipio, parroquia, getValues, setValue,
   return (
     <div className="dptcontainer">
 
-      <select onChange={(e) => getMunicipalities(e)} >
+      <select onChange={(e) => getMunicipalities(e)} required>
         <option value="">-- Selecciona estado --</option>
         {states !== null && states.map((option, index) => {
 
@@ -77,7 +77,7 @@ export default function Dpt({ estado, municipio, parroquia, getValues, setValue,
         })}
       </select>
 
-      <select onChange={(e) => getParishes(e)}>
+      <select onChange={(e) => getParishes(e)} required>
         {municipalities !== null ? <option value="">-- Selecciona municipio --</option> : ""}
         {municipalities !== null && municipalities.map((option, index) => {
           return (option.value == defaultMunicipality.value) ? (
@@ -96,7 +96,7 @@ export default function Dpt({ estado, municipio, parroquia, getValues, setValue,
       <select
         onChange={(e) => {
           setValue(parroquia, { value: parishes[parseInt(e.target.value)].value, label: parishes[parseInt(e.target.value)].label })
-        }}>
+        }} required>
         {parishes !== null ? <option value="">-- Selecciona parroquia --</option> : ""}
         {parishes !== null && parishes.map((option, index) => {
 

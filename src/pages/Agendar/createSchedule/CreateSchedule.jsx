@@ -118,9 +118,13 @@ export default function CreateActivity({ handleCreateClose }) {
               Nombre de la actividad:
             </label>
             <div>
-              <input className="add-input-2" maxLength={50} type="text" placeholder='nombre de la actividad'
+              <input className="add-input-2" minLength={5} maxLength={70} type="text" placeholder='nombre de la actividad'
                 {...register("activityName", {
                   required: 'ingrese nombre de la actividad',
+                  pattern: {
+                    value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters, numbers and spaces only
+                    message: 'Solo se permiten letras, espacios y numeros'
+                  }
                 })}
               />
               <div>
@@ -170,7 +174,7 @@ export default function CreateActivity({ handleCreateClose }) {
 
                 </select>
                 <div>
-                  {errors.activity && <span className="error-message">{errors.activity.message}</span>}
+                  {errors.activityAux && <span className="error-message">{errors.activityAux.message}</span>}
                 </div>
 
               </div>
@@ -239,6 +243,10 @@ export default function CreateActivity({ handleCreateClose }) {
               <input className="add-input-2" type="number" min="1" max="5000" placeholder='cantidad de estudiantes'
                 {...register("studentSpected", {
                   required: 'ingrese la cantidad de estudiantes esperados',
+                  pattern: {
+                    value: /^[0-9]+$/,  // Esta regex solo permite números enteros
+                    message: 'Solo se permiten números'
+                  }
                 })}
               />
               <div>
@@ -273,9 +281,15 @@ export default function CreateActivity({ handleCreateClose }) {
               Nombre del sitio de la actividad:
             </label>
             <div>
-              <input className="add-input-2" maxLength={50} type="text" placeholder='nombre del sitio de la actividad'
+              <input className="add-input-2" type="text" placeholder='nombre del sitio de la actividad'
+                minLength={5}
+                maxLength={50}
                 {...register("activityPlace.name", {
                   required: 'ingrese el nombre del lugar de la actividad',
+                  pattern: {
+                    value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters, numbers and spaces only
+                    message: 'Solo se permiten letras, espacios y numeros'
+                  }
                 })}
               />
               <div>
@@ -290,9 +304,15 @@ export default function CreateActivity({ handleCreateClose }) {
               Dirección del sitio de la actividad:
             </label>
             <div>
-              <input className="add-input-2" maxLength={50} type="text" placeholder='dirección del lugar'
+              <input className="add-input-2" type="text" placeholder='dirección del lugar'
+                minLength={5}
+                maxLength={80}
                 {...register("activityPlace.address", {
-                  required: 'ingrese acronimo del ente',
+                  required: 'ingrese direccion del lugar de la actividad',
+                  pattern: {
+                    value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ,\s]+$/, // Regex pattern for letters, numbers and spaces only
+                    message: 'Solo se permiten letras, espacios y numeros'
+                  }
                 })}
               />
               <div>
@@ -309,7 +329,7 @@ export default function CreateActivity({ handleCreateClose }) {
 
         <div className="adding-schools">
           <div>
-            Colegios a atender:
+            Instituciones Educativas a atender:
           </div>
 
           <button type="button" onClick={() => append({})}>
@@ -342,9 +362,16 @@ export default function CreateActivity({ handleCreateClose }) {
                   Nombre de la Institución:
                 </label>
                 <div>
-                  <input {...register(`schools.${index}.name`, {
-                    required: 'ingrese el nombre de la escuela',
-                  })} />
+                  <input
+                    minLength={5}
+                    maxLength={50}
+                    {...register(`schools.${index}.name`, {
+                      required: 'ingrese el nombre de la escuela',
+                      pattern: {
+                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters, numbers and spaces only
+                        message: 'Solo se permiten letras, espacios y numeros'
+                      }
+                    })} />
                   <div>
                     {errors?.schools?.[index]?.name && <span className="error-message">{errors?.schools?.[index]?.name.message}</span>}
                   </div>
@@ -355,14 +382,17 @@ export default function CreateActivity({ handleCreateClose }) {
                 <label>
                   Tipo de institución:
                 </label>
-                <select className="" {...register("type", {
-                  required: 'seleccione el rol',
+                <select className="" {...register(`schools.${index}.type`, {
+                  required: 'seleccione el tipo de institución',
                   pattern: {}
                 })}>
                   <option value="" disabled selected>Seleccione el tipo</option>
                   <option key="private"  >Privado</option>
                   <option key="public"  >Público</option>
                 </select>
+                <div>
+                  {errors?.schools?.[index]?.type && <span className="error-message">{errors?.schools?.[index]?.type.message}</span>}
+                </div>
               </div>
             </div>
 

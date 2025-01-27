@@ -8,15 +8,32 @@ import EditUser from './editUser/EditUser.jsx'
 import DeleteUser from './deleteUser/DeleteUser.jsx';
 import { getUsers } from '../../api/users.js';
 
+import Pagination from '@mui/material/Pagination';
+
 export default function Users() {
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [users, setUsers] = useState([])
 
+  const [selectedUser, setSelectedUser] = useState()
+
+  //variables for pagination
+  const [total, setTotal] = useState()
+  const [postsPerPage, setPostPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Change page
+  const paginate = (e, value) => {
+    setCurrentPage(value)
+    fetchingUsers((value - 1) * postsPerPage, postsPerPage)
+    console.log(currentPosts)
+  }
+
   const handleCreateClose = async () => {
     setOpenCreate(false);
     fetchingUsers()
+    setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
     setUsers(data.data) */
@@ -24,6 +41,7 @@ export default function Users() {
   const handleEditClose = async () => {
     setOpenEdit(false);
     fetchingUsers()
+    setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
     setUsers(data.data) */
@@ -31,15 +49,17 @@ export default function Users() {
   const handleDeleteClose = async () => {
     setOpenDelete(false);
     fetchingUsers()
+    setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
     setUsers(data.data) */
   }
 
-  const fetchingUsers = async () => {
+  const fetchingUsers = async (skip = 0, limit = postsPerPage) => {
     try {
-      const data = await getUsers()
-      setUsers(data.data)
+      const data = await getUsers(skip, limit)
+      setUsers(data.data.documents)
+      setTotal(data.data.total)
       console.log(data)
     } catch (error) {
       console.log(error)
@@ -67,7 +87,7 @@ export default function Users() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <EditUser handleEditClose={handleEditClose} />
+        <EditUser selectedUser={selectedUser} handleEditClose={handleEditClose} />
       </Modal>
 
       <Modal
@@ -76,7 +96,7 @@ export default function Users() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DeleteUser handleDeleteClose={handleDeleteClose} />
+        <DeleteUser user={selectedUser} handleDeleteClose={handleDeleteClose} />
       </Modal>
 
 
@@ -90,7 +110,7 @@ export default function Users() {
       </div>
       <div className="activity-list">
         <div className="pagination">
-          Pagination
+          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
         </div>
 
         <div>
@@ -106,7 +126,7 @@ export default function Users() {
             </thead>
             <tbody>
               {
-                users.map((element) => {
+                users ? users.map((element) => {
                   return <tr >
                     <td>
                       {element.name} {element.lastName}
@@ -118,12 +138,12 @@ export default function Users() {
                       {element.entity.acronim}
                     </td>
                     <td>
-                      <Tooltip title="Boton de Modificar" onClick={(e) => { e.stopPropagation(); setOpenEdit(true); }}>
+                      <Tooltip title="Boton de Modificar" onClick={(e) => { e.stopPropagation(); setOpenEdit(true); setSelectedUser(element) }}>
                         <IconButton size="small" aria-label="edit" >
                           <ModeEditIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); }}>
+                      <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setSelectedUser(element) }}>
                         <IconButton size="small" aria-label="delete" >
                           <DeleteIcon fontSize="small" />
                         </IconButton>
@@ -131,6 +151,7 @@ export default function Users() {
                     </td>
                   </tr>
                 })
+                :""
               }
             </tbody>
           </table >
@@ -138,7 +159,7 @@ export default function Users() {
 
 
         <div className="pagination">
-          Pagination
+          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
         </div>
       </div>
     </div>

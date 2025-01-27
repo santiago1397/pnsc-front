@@ -12,3 +12,20 @@
     overflow: hidden;
     padding: 10px 50px;
 }
+
+.entity-select{
+    box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
+}
+
+.adduser-inputs{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.add-input-2{
+    width: 100%;
+    box-sizing: border-box;
+}

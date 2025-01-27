@@ -15,6 +15,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import LogoutIcon from '@mui/icons-material/Logout';
 import BusinessIcon from '@mui/icons-material/Business';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import "./App.css"
 
 const drawerWidth = 240;
@@ -106,6 +107,10 @@ export const ProtectedRoute = () => {
           <button onClick={() => navigate(`/entity`)}>
             <BusinessIcon fontSize="small" />
             Entes
+          </button>
+          <button onClick={() => navigate(`/reports`)}>
+            <AssessmentIcon fontSize="small" />
+            Reportes
           </button>
           <button onClick={() => logout()}>
             <LogoutIcon fontSize="small" />

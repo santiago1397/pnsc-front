@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import './createUser.css'
 import { ToastError } from '../../../components/toasts/ToastError.jsx'
@@ -6,18 +6,36 @@ import { ToastSuccess } from '../../../components/toasts/ToastSuccess.jsx'
 import { Tooltip, IconButton, inputAdornmentClasses } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { createUser } from '../../../api/users.js';
+import { getEntities } from '../../../api/entity.js';
+import { getRoles } from '../../../api/roles.js';
 
 
 // falta la funcion para cerrar el modal
 export default function CreateActivity({ handleCreateClose }) {
+  const [entities, setEntities] = useState([])
+  const [roles, setRoles] = useState([])
+
   const {
     register,
     handleSubmit,
-    setValue,
-    getValues,
     reset,
     formState: { errors, values },
   } = useForm({ mode: "onChange" });
+
+  const fetchEntities = async () => {
+    const data = await getEntities()
+    setEntities(data.data)
+  }
+
+  const fetchRoles = async () => {
+    const data = await getRoles()
+    setRoles(data.data)
+  }
+
+  useEffect(() => {
+    fetchEntities()
+    fetchRoles()
+  }, [])
 
   const onSubmit = async (data) => {
     try {
@@ -30,13 +48,12 @@ export default function CreateActivity({ handleCreateClose }) {
 
       /* ToastError("error al crear semillero") */
     }
-
   }
 
   return (
     <div className="place-modal">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
+        <div className="activities-title">
           <h2>
             CREAR USUARIO
           </h2>
@@ -50,15 +67,15 @@ export default function CreateActivity({ handleCreateClose }) {
           </div>
         </div>
 
-        <div>
+        <div className="adduser-inputs">
           <div className="adduser-input">
             <label>
               Nombre: <span className="required-thing">*</span>
             </label>
             <div>
-              <input className="add-input-2" maxLength={50} type="text" placeholder='nombre de la actividad'
+              <input className="add-input-2" maxLength={50} type="text" placeholder='nombre'
                 {...register("name", {
-                  required: 'ingrese nombre de la actividad',
+                  required: 'ingrese nombre del usuario',
                 })}
               />
               {errors.name && <span className="error-message">{errors.name.message}</span>}
@@ -70,29 +87,28 @@ export default function CreateActivity({ handleCreateClose }) {
               Apellido: <span className="required-thing">*</span>
             </label>
             <div>
-              <input className="add-input-2" maxLength={50} type="text" placeholder='nombre de la actividad'
-                {...register("lastname", {
-                  required: 'ingrese nombre de la actividad',
+              <input className="add-input-2" maxLength={50} type="text" placeholder='apellido'
+                {...register("lastName", {
+                  required: 'ingrese apellido del usuario',
                 })}
               />
-              {errors.name && <span className="error-message">{errors.name.message}</span>}
+              {errors.lastname && <span className="error-message">{errors.lastname.message}</span>}
             </div>
           </div>
-        </div>
 
 
-        <div>
+
           <div className="adduser-input">
             <label>
               Correo: <span className="required-thing">*</span>
             </label>
             <div>
-              <input className="add-input-2" maxLength={50} type="email" placeholder='nombre de la actividad'
+              <input className="add-input-2" maxLength={50} type="email" placeholder='correo'
                 {...register("email", {
-                  required: 'ingrese nombre de la actividad',
+                  required: 'ingrese email',
                 })}
               />
-              {errors.name && <span className="error-message">{errors.name.message}</span>}
+              {errors.email && <span className="error-message">{errors.email.message}</span>}
             </div>
           </div>
 
@@ -101,64 +117,88 @@ export default function CreateActivity({ handleCreateClose }) {
               Contraseña: <span className="required-thing">*</span>
             </label>
             <div>
-              <input className="add-input-2" maxLength={50} type="password" placeholder='nombre de la actividad'
+              <input className="add-input-2" maxLength={50} type="password" placeholder='contraseña'
                 {...register("password", {
-                  required: 'ingrese nombre de la actividad',
+                  required: 'ingrese contraseña',
                 })}
               />
-              {errors.name && <span className="error-message">{errors.name.message}</span>}
+              {errors.password && <span className="error-message">{errors.password.message}</span>}
             </div>
           </div>
-        </div>
 
 
 
-        <div>
-          <select className="" {...register("role", {
-            required: 'seleccione el rol',
-            pattern: {}
-          })}>
-            <option value="" disabled selected>Seleccione el rol</option>
-            <option key="1"  >Super Usuario</option>
-            <option key="2"  >Presidente</option>
-            <option key="3"  >Delegado</option>
-          </select>
-
-
-          <select className="" {...register("entity", {
-            required: 'seleccione el Ente',
-            pattern: {}
-          })}>
-            <option value="" disabled selected>Seleccione Ente</option>
-            <option key="1"  >ABAE</option>
-            <option key="2"  >FUNDACITE MÉRIDA</option>
-            <option key="3"  >FUNDACITE DELTA AMACURO</option>
-          </select>
-        </div>
-
-
-        <div>
-          <div className="adduser-input">
-            <label>
-              Telefono: <span className="required-thing">*</span>
-            </label>
+          <div>
             <div>
-              <input className="add-input-2" maxLength={11} type="number" placeholder='nombre de la actividad'
-                {...register("phone", {
-                  required: 'ingrese nombre de la actividad',
-                })}
-              />
-              {errors.name && <span className="error-message">{errors.name.message}</span>}
+              Seleccione el Rol
+            </div>
+            <select className="entity-select" {...register("role", {
+              required: 'seleccione el rol',
+              pattern: {}
+            })} /* onChange={(e) => handleRoleSelect(e)} */>
+              <option value="" disabled selected>Seleccione el rol</option>
+              {
+                roles.map((item, index) => {
+                  return <option key={item._id} value={item._id} >
+                    {item.name}
+                  </option>
+                })
+              }
+            </select>
+            <div>
+              {errors.role && <span className="error-message">{errors.role.message}</span>}
             </div>
           </div>
 
-          
+
+          <div>
+            <div>
+              Seleccione Ente
+            </div>
+
+            <select className="entity-select" {...register("entity", {
+              required: 'seleccione el ente',
+              pattern: {}
+            })} /* onChange={(e) => handleEntitySelect(e)} */>
+
+              <option value="" disabled selected>Seleccione el Ente</option>
+              {
+                entities.map((item, index) => {
+                  return <option key={item.name} value={item._id} >
+                    {item.name}
+                  </option>
+                })
+              }
+            </select>
+            <div>
+              {errors.entityAux && <span className="error-message">{errors.entityAux.message}</span>}
+            </div>
+          </div>
+
+
+          <div>
+            <div className="adduser-input">
+              <label>
+                Telefono: <span className="required-thing">*</span>
+              </label>
+              <div>
+                <input className="add-input-2" maxLength={11} type="number" placeholder='nombre de la actividad'
+                  {...register("phone", {
+                    required: 'ingrese telefono',
+                  })}
+                />
+                {errors.phone && <span className="error-message">{errors.phone.message}</span>}
+              </div>
+            </div>
+
+
+          </div>
+
+          <button className="adduser-btn">
+            AGREGAR
+          </button>
+
         </div>
-
-        <button className="adduser-btn">
-          AGREGAR
-        </button>
-
       </form>
     </div>
   )

@@ -9,15 +9,19 @@ import DeleteSchedule from './deleteSchedule/DeleteSchedule.jsx';
 import { getSchedules } from '../../api/schedule.js'
 import { DateTime } from "luxon";
 import Pagination from '@mui/material/Pagination';
+import { useAuth } from "../../context/authContext";
 import "./agendar.css"
 
 export default function Agendar() {
+
+  const { user } = useAuth();
 
 
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [schedules, setSchedules] = useState([])
+  const [selectedSchedule, setSelectedSchedule] = useState()
 
   //variables for pagination
   const [total, setTotal] = useState()
@@ -95,7 +99,10 @@ export default function Agendar() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DeleteSchedule handleDeleteClose={handleDeleteClose} />
+        <DeleteSchedule
+          selectedSchedule={selectedSchedule}
+          handleDeleteClose={handleDeleteClose}
+        />
       </Modal>
 
 
@@ -121,6 +128,12 @@ export default function Agendar() {
                 <th>nombre de la actividad</th>
                 <th>categoría</th>
                 <th>lugar de la actividad</th>
+                {
+                  user.role.role <= 2 ?
+                    <th>
+                      entidad
+                    </th> : ""
+                }
                 <th>estado</th>
                 <th>municipio</th>
                 <th>parroquia</th>
@@ -148,6 +161,12 @@ export default function Agendar() {
                     <td>
                       {element.activityPlace.name}
                     </td>
+                    {
+                      user.role.role <= 2 ?
+                        <td>
+                          {element.entity.name}
+                        </td> : ""
+                    }
                     <td>
                       {element.activityPlace.state.label}
                     </td>
@@ -169,7 +188,7 @@ export default function Agendar() {
                     <ModeEditIcon fontSize="small" />
                   </IconButton>
                 </Tooltip> */}
-                      <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setUserDetails(item) }}>
+                      <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setSelectedSchedule(element) }}>
                         <IconButton size="small" aria-label="delete" >
                           <DeleteIcon fontSize="small" />
                         </IconButton>

@@ -14,6 +14,7 @@ import Students from './Students.jsx';
 import { useMultistepForm } from './usemultistep'
 import CloseIcon from '@mui/icons-material/Close';
 import { Tooltip, IconButton, inputAdornmentClasses } from '@mui/material';
+import { createVisit } from '../../../api/visits.js';
 
 
 // falta la funcion para cerrar el modal
@@ -36,6 +37,7 @@ export default function CreateVisit({ handleCreateClose }) {
     getValues,
     reset,
     control,
+    setError,
     formState: { errors, values },
   } = useForm({ mode: "onChange" });
 
@@ -63,12 +65,12 @@ export default function CreateVisit({ handleCreateClose }) {
       schedules[index].activityPlace
     )
     setFlag(true)
-    setValue("agendedLink", schedules[index]._id)
-    setValue("activityName", schedules[index].activityName)
-    setValue("activityPlace", schedules[index].activityPlace)
-    setValue("activityDate", schedules[index].activityDate)
-    setValue("schools", schedules[index].schools)
-    setValue("category", schedules[index].category)
+    setValue("details.agendedLink", schedules[index]._id)
+    setValue("details.activityName", schedules[index].activityName)
+    setValue("details.activityPlace", schedules[index].activityPlace)
+    setValue("details.activityDate", schedules[index].activityDate)
+    setValue("details.schools", schedules[index].schools)
+    setValue("details.category", schedules[index].category)
 
   }
 
@@ -139,7 +141,10 @@ export default function CreateVisit({ handleCreateClose }) {
       arrayStudents={arrayStudents}
       appendStudent={appendStudent}
       removeStudents={removeStudents}
+      setValue={setValue}
+      getValues={getValues}
       handleCreateClose={handleCreateClose}
+      setError={setError}
     />
   ])
 
@@ -176,12 +181,16 @@ export default function CreateVisit({ handleCreateClose }) {
       }
 
 
+      
+      const res = await createVisit(data)
 
-      /* reset() */
+      ToastSuccess("Visita cargada con exito")
+      handleCreateClose()
+      reset()
     } catch (error) {
       console.log(error)
 
-      /* ToastError("error al crear semillero") */
+      ToastError("error al cargar visita")
     }
 
   }
@@ -191,7 +200,7 @@ export default function CreateVisit({ handleCreateClose }) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="visit-title">
           <h2>
-            AGENDAR NUEVA RUTA
+            REPORTAR VISITA REALIZADA
           </h2>
 
           <div>

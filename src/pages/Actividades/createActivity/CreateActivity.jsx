@@ -67,7 +67,7 @@ export default function CreateActivity({ handleCreateClose }) {
               {...register("name", {
                 required: 'ingrese nombre de la actividad',
                 pattern: {
-                  value: /^[a-zA-Z0-9\s]+$/, // Regex pattern for letters and spaces only
+                  value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters, numbers and spaces only
                   message: 'Solo se permiten letras, espacios y numeros'
                 }
               })}
@@ -87,7 +87,7 @@ export default function CreateActivity({ handleCreateClose }) {
             <textarea className="add-input-2" maxLength={150} rows={5} type="text" placeholder='descripción de la actividad'
               {...register("desc", {
                 pattern: {
-                  value: /^[a-zA-Z0-9\s]+$/, // Regex pattern for letters and spaces only
+                  value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters, numbers and spaces only
                   message: 'Solo se permiten letras, espacios y numeros'
                 }
               })}
@@ -116,7 +116,7 @@ export default function CreateActivity({ handleCreateClose }) {
                 <input {...register(`subcategories.${index}.name`, {
                   required: 'ingrese el nombre de la subcategoria',
                   pattern: {
-                    value: /^[a-zA-Z0-9\s]+$/, // Regex pattern for letters and spaces only
+                    value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters, numbers and spaces only
                     message: 'Solo se permiten letras, espacios y numeros'
                   }
                 })} />
