@@ -3,11 +3,12 @@ import { useForm } from 'react-hook-form';
 import { ToastError } from '../../../components/toasts/ToastError.jsx'
 import { ToastSuccess } from '../../../components/toasts/ToastSuccess.jsx'
 import { Tooltip, IconButton, inputAdornmentClasses } from '@mui/material';
+import { editEntity } from '../../../api/entity.js';
 import CloseIcon from '@mui/icons-material/Close';
 
 
 //necesito traer los valores por defecto
-export default function EditEntity({handleEditClose}) {
+export default function EditEntity({ handleEditClose, selectedEntity }) {
   const {
     register,
     handleSubmit,
@@ -16,12 +17,20 @@ export default function EditEntity({handleEditClose}) {
     reset,
     formState: { errors, values },
     //necesito agregar los valores por defecto
-  } = useForm({ mode: "onChange" });
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      name: selectedEntity.name,
+      acronim: selectedEntity.acronim
+    }
+  });
 
   const onSubmit = async (data) => {
     try {
-      console.log(data)
+      const res = await editEntity(selectedEntity._id, data)
 
+      handleEditClose()
+      ToastSuccess("entidad editada exitosamente")
       reset()
     } catch (error) {
       console.log(error)
@@ -50,35 +59,35 @@ export default function EditEntity({handleEditClose}) {
         </div>
 
         <div>
-        <div className="adduser-input">
-          <label>
-            Nombre del Ente: <span className="required-thing">*</span>
-          </label>
-          <div>
-            <input className="add-input-2" maxLength={50} type="text" placeholder='nombre de la actividad'
-              {...register("name", {
-                required: 'ingrese nombre del ente',
-              })}
-            />
-            {errors.name && <span className="error-message">{errors.name.message}</span>}
+          <div className="adduser-input">
+            <label>
+              Nombre del Ente: <span className="required-thing">*</span>
+            </label>
+            <div>
+              <input className="add-input-2" maxLength={50} type="text" placeholder='nombre de la actividad'
+                {...register("name", {
+                  required: 'ingrese nombre del ente',
+                })}
+              />
+              {errors.name && <span className="error-message">{errors.name.message}</span>}
 
+            </div>
           </div>
-        </div>
 
-        <div className="adduser-input">
-          <label>
-            Acronimo del Ente: <span className="required-thing">*</span>
-          </label>
-          <div>
-            <input className="add-input-2" maxLength={50} type="text" placeholder='nombre de la actividad'
-              {...register("acronim", {
-                required: 'ingrese acronimo del ente',
-              })}
-            />
-            {errors.name && <span className="error-message">{errors.name.message}</span>}
+          <div className="adduser-input">
+            <label>
+              Acronimo del Ente: <span className="required-thing">*</span>
+            </label>
+            <div>
+              <input className="add-input-2" maxLength={50} type="text" placeholder='nombre de la actividad'
+                {...register("acronim", {
+                  required: 'ingrese acronimo del ente',
+                })}
+              />
+              {errors.acronim && <span className="error-message">{errors.acronim.message}</span>}
 
+            </div>
           </div>
-        </div>
 
         </div>
 

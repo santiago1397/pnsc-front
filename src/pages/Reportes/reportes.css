@@ -27,7 +27,7 @@
   width: 75px;
 }
 
-.responsive-table-reportes .small{
+.responsive-table-reportes .small {
   width: 70px;
 }
 
@@ -39,6 +39,54 @@
 }
 
 
-.graphs{
+.graphs {
   flex: 1;
 }
+
+.responsive-table-total-mensual {
+  border-collapse: collapse;
+}
+
+.responsive-table-total-mensual th {
+  padding: 10px;
+  border: 1px solid #ccc;
+  word-wrap: break-word;
+}
+
+.responsive-table-total-mensual td {
+  padding: 4px;
+  border: 1px solid #ccc;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+
+}
+
+.report-table-2{
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  height: auto;
+}
+
+.report-table-2 th {
+  padding: 10px;
+  border: 1px solid #ccc;
+  word-wrap: break-word;
+}
+
+.report-table-2 td {
+  padding: 4px;
+  border: 1px solid #ccc;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+
+}
+
+.parish{
+  border:none !important;
+  padding: 2px;
+}
+

@@ -17,12 +17,14 @@ export default function Information({ register, errors, setValue, getValues, arr
   const [schools, setSchools] = useState([])
   const [flag, setFlag] = useState(false)
 
+  const [rerender, setRerender] = useState(0);
+
   const [subcategories, setSubCategories] = useState([])
 
 
   const fetchingSchedules = async () => {
     try {
-      const data = await getSchedules(0,1000)
+      const data = await getSchedules(0, 1000)
       setSchedules(data.data.documents)
 
       console.log(data.data.documents)
@@ -49,30 +51,39 @@ export default function Information({ register, errors, setValue, getValues, arr
 
   //esta monda esta fea, hay que arreglarlo
   const handleScheduleSelected = (e) => {
-    const index = e.target.value 
+    const index = e.target.value
 
 
-    
+
     setFlag(!flag)
     setValue("agendedLink", schedules[index]._id)
     setValue("activityName", schedules[index].activityName)
     setValue("activityPlace", schedules[index].activityPlace)
+    setValue("studentsExpected", schedules[index].studentSpected)
+    setValue("teachersExpected", schedules[index].teachersExpected)
     setValue("activityDate", new Date(schedules[index].activityDate).toISOString().split('T')[0])
     setValue("ludicActivity", schedules[index].activity)
     setValue("subActivity", schedules[index].subActivity)
 
-    
-    const indexActivity = activities.findIndex((element) => element.name === (schedules[index].activity.name))    
+
+    const indexActivity = activities.findIndex((element) => element.name === (schedules[index].activity.name))
     setValue("ludicActivityAux", indexActivity)
 
-    
+
     setSubCategories(schedules[index].activity.subcategories)
     setValue("activity", schedules[index].activity)
-    
+
+    console.log(schedules[index].entity.name)
+    const indexEntity = entities.findIndex((element) => element.name === (schedules[index].entity.name))
+    setValue("entityAux", indexEntity)
+
+    setValue("entity", schedules[index].entity)
+
     //limpio el array y lo relleno
     for (let i = 0; i < arraySchools.length; i++) {
       removeSchools(0)
     }
+
     setValue("schools", schedules[index].schools)
 
 
@@ -90,9 +101,9 @@ export default function Information({ register, errors, setValue, getValues, arr
   }
 
   const fetchEntities = async () => {
-    const data = await getEntities()
+    const data = await getEntities(0,10000)
     /* console.log(data.data) */
-    setEntities(data.data)
+    setEntities(data.data.documents)
   }
 
   const setDefaultEntity = async () => {
@@ -112,8 +123,14 @@ export default function Information({ register, errors, setValue, getValues, arr
     fetchActivities()
   }, [])
 
+
+  const addItem = () => {
+    appendSchools({});
+    setRerender(rerender + 1); // Trigger re-render
+  };
+
   return (
-    <div>
+    <div className="students-container">
 
       <br />
 
@@ -229,7 +246,7 @@ export default function Information({ register, errors, setValue, getValues, arr
           : ""}
 
 
-       {/*  <div className="adduser-input">
+        {/*  <div className="adduser-input">
           <label>
             Subcategoria:
           </label>
@@ -254,28 +271,35 @@ export default function Information({ register, errors, setValue, getValues, arr
         </div> */}
       </div>
 
-      <div className="adduser-input">
-        <label>
-          Ente:
-        </label>
-        <div>
-          <select className="" {...register("entityAux", {
-            required: 'seleccione el Ente',
-            pattern: {}
-          })} onChange={(e) => handleEntitySelect(e)}>
-            <option value="" disabled selected>Seleccione el Ente</option>
-            {
-              entities.map((item, index) => {
-                return <option key={item.name} value={index} >
-                  {item.name}
-                </option>
-              })
-            }
-          </select>
-          {errors.entityAux && <span className="error-message">{errors.entityAux.message}</span>}
+      {
+        user.role.role <= 2 ?
+          <div className="adduser-input">
+            <label>
+              Ente:
+            </label>
+            <div>
+              <select className="" {...register("entityAux", {
+                required: 'seleccione el Ente',
+                pattern: {}
+              })} onChange={(e) => handleEntitySelect(e)}>
+                <option value="" disabled selected>Seleccione el Ente</option>
+                {
+                  entities.map((item, index) => {
+                    return <option key={item.name} value={index} >
+                      {item.name}
+                    </option>
+                  })
+                }
+              </select>
+              {errors.entityAux && <span className="error-message">{errors.entityAux.message}</span>}
 
-        </div>
-      </div>
+            </div>
+          </div>
+
+          : ""
+      }
+
+
 
       <div className="adduser-input">
         <label>
@@ -362,36 +386,40 @@ export default function Information({ register, errors, setValue, getValues, arr
           Instituciones Atendidas:
         </h4>
 
-        <button type="button" onClick={() => appendSchools({})}>
+        <button type="button" onClick={() => addItem()}>
           Agregar Institución
         </button>
       </div>
 
       {arraySchools.map((item, index) => (
-        <div key={index}>
+        <div key={item.id}>
           <div>
             <label>
               Nombre de la Institución:
             </label>
             <div>
-              <input {...register(`schools.${index}.name`)} />
+              <input {...register(`schools.${index}.name`, {
+              required: 'introduzca nombre',
+            })}  onChange={(()=> setRerender(rerender + 1))}/>
+            {errors?.schools?.[index]?.name && <span className="students-errors">{errors?.schools?.[index]?.name.message}</span>}
 
             </div>
           </div>
 
           <div className="school-name-input">
-                <label>
-                  Tipo de institución:
-                </label>
-                <select className="" {...register(`schools.${index}.type`, {
-                  required: 'seleccione el rol',
-                  pattern: {}
-                })}>
-                  <option value="" disabled selected>Seleccione el tipo</option>
-                  <option key="private"  >Privado</option>
-                  <option key="public"  >Público</option>
-                </select>
-              </div>
+            <label>
+              Tipo de institución:
+            </label>
+            <select className="" {...register(`schools.${index}.type`, {
+              required: 'seleccione el rol',
+              pattern: {}
+            })}>
+              <option value="" disabled selected>Seleccione el tipo</option>
+              <option key="private"  >Privado</option>
+              <option key="public"  >Público</option>
+            </select>
+            {errors?.schools?.[index]?.type && <span className="students-errors">{errors?.schools?.[index]?.type.message}</span>}
+          </div>
 
           <div>
             <Dpt

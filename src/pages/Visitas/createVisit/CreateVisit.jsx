@@ -11,10 +11,11 @@ import { ToastSuccess } from '../../../components/toasts/ToastSuccess.jsx'
 import { useAuth } from "../../../context/authContext";
 import Information from './Information.jsx';
 import Students from './Students.jsx';
+import Teachers from './Teachers.jsx';
 import { useMultistepForm } from './usemultistep'
 import CloseIcon from '@mui/icons-material/Close';
 import { Tooltip, IconButton, inputAdornmentClasses } from '@mui/material';
-import { createVisit } from '../../../api/visits.js';
+import { createVisit, verifyStudents } from '../../../api/visits.js';
 
 
 // falta la funcion para cerrar el modal
@@ -53,6 +54,12 @@ export default function CreateVisit({ handleCreateClose }) {
     defaultValue: [{ entity: user.entity, activityDate: getValues("activityDate") }],
   });
 
+  const { fields: arrayTeachers, append: appendTeacher, remove: removeTeacher } = useFieldArray({
+    control,
+    name: 'teachers',
+    defaultValue: [{ entity: user.entity, activityDate: getValues("activityDate") }],
+  });
+
   const handleEntitySelect = (e) => {
     setValue("entityAux", e.target.value)
     setValue("entity", entities[e.target.value])
@@ -85,9 +92,9 @@ export default function CreateVisit({ handleCreateClose }) {
   }
 
   const fetchEntities = async () => {
-    const data = await getEntities()
+    const data = await getEntities(0,10000)
     /* console.log(data.data) */
-    setEntities(data.data)
+    setEntities(data.data.documents)
   }
 
   const fetchingSchedules = async () => {
@@ -145,6 +152,18 @@ export default function CreateVisit({ handleCreateClose }) {
       getValues={getValues}
       handleCreateClose={handleCreateClose}
       setError={setError}
+    />,
+    <Teachers
+      register={register}
+      errors={errors}
+      arraySchools={arraySchools}
+      arrayTeachers={arrayTeachers}
+      appendTeacher={appendTeacher}
+      removeTeacher={removeTeacher}
+      setValue={setValue}
+      getValues={getValues}
+      handleCreateClose={handleCreateClose}
+      setError={setError}
     />
   ])
 
@@ -180,8 +199,9 @@ export default function CreateVisit({ handleCreateClose }) {
         return
       }
 
+      const verification = await verifyStudents(data)
+      console.log(verification)
 
-      
       const res = await createVisit(data)
 
       ToastSuccess("Visita cargada con exito")
@@ -189,8 +209,12 @@ export default function CreateVisit({ handleCreateClose }) {
       reset()
     } catch (error) {
       console.log(error)
+      if( error.response.status ==406){
+        ToastError(`Estudiante ${error.response.data.student.name} ya se encuentra registrado`)
+      }else{
+        ToastError("error al cargar visita")
+      }
 
-      ToastError("error al cargar visita")
     }
 
   }

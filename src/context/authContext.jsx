@@ -18,22 +18,21 @@ export const AuthProvider = ({ children }) => {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
+ // no tocar 
   // clear errors after 5 seconds
-  useEffect(() => {
+  /* useEffect(() => {
     if (errors.length > 0) {
       const timer = setTimeout(() => {
         setErrors([]);
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [errors]);
+  }, [errors]); */
 
 
   const signin = async (user) => {
     try {
       const res = await loginRequest(user);
-
       setUser(res.data);
       setIsAuthenticated(true);
 

@@ -10,14 +10,20 @@ import { getEntities } from '../../api/entity.js'
 import { getVisits } from '../../api/visits.js';
 import Pagination from '@mui/material/Pagination';
 import { useAuth } from "../../context/authContext";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ViewVisit from './viewVisit/ViewVisit.jsx';
 
 export default function Visitas() {
 
   const { user } = useAuth();
 
+
+  //modals variables
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
+
   const [activities, setActivities] = useState([])
 
   const [visits, setVisits] = useState([])
@@ -36,6 +42,12 @@ export default function Visitas() {
     console.log(currentPosts)
   }
 
+  const handleDetailsClose = async () => {
+    setOpenDetails(false);
+    /* const data = await getUsers(id)
+    setFilteredUSers(data.data)
+    setUsers(data.data) */
+  }
   const handleCreateClose = async () => {
     setOpenCreate(false);
     fetchingVisits()
@@ -107,7 +119,16 @@ export default function Visitas() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DeleteVisit handleDeleteClose={handleDeleteClose} />
+        <DeleteVisit handleDeleteClose={handleDeleteClose} selectedVisit={selectedVisit} />
+      </Modal>
+
+      <Modal
+        open={openDetails}
+        onClose={handleDetailsClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <ViewVisit handleDetailsClose={handleDetailsClose} selectedVisit={selectedVisit} />
       </Modal>
 
 
@@ -142,6 +163,9 @@ export default function Visitas() {
                 <th>municipio</th>
                 <th>parroquia</th>
                 <th>direccion</th>
+                <th>estudiantes reportados</th>
+                <th>estudiantes esperados</th>
+
                 <th>opciones</th>
               </tr>
             </thead>
@@ -180,11 +204,23 @@ export default function Visitas() {
                       {element.activityPlace.address}
                     </td>
                     <td>
-                      <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setUserDetails(item) }}>
+                      {element.students}
+                    </td>
+                    <td>
+                      {element.studentsExpected}
+                    </td>
+                    <td>
+                      <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDetails(true); setSelectedVisit(element) }}>
+                        <IconButton size="small" aria-label="delete" >
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setSelectedVisit(element) }}>
                         <IconButton size="small" aria-label="delete" >
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
+
                     </td>
                   </tr>
                 })

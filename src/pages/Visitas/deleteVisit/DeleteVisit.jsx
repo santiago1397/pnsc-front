@@ -4,13 +4,13 @@ import { ToastSuccess } from '../../../components/toasts/ToastSuccess.jsx'
 import { Tooltip, IconButton, inputAdornmentClasses } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function DeleteActivity({handleDeleteClose}) {
+export default function DeleteActivity({ handleDeleteClose, selectedVisit }) {
   return (
     <div className="place-modal">
       <form >
         <div>
           <h2>
-          ¿Seguro que desea borrar este Ente?
+            ¿Seguro que desea borrar esta Visita?
           </h2>
 
           <div>

@@ -36,20 +36,21 @@ export default function CreateActivity({ handleCreateClose }) {
   const [entities, setEntities] = useState([])
   const [flag, setFlag] = useState({})
 
-
+  console.log(user)
   const fetchCategories = async () => {
     const data = await getActivities(0, 1000)
     setCategories(data.data.documents)
   }
 
   const fetchEntities = async () => {
-    const data = await getEntities()
+    const data = await getEntities(0,10000)
     console.log(data.data)
-    setEntities(data.data)
+    setEntities(data.data.documents)
 
-    const lmao = data.data.findIndex((element) => element.name == user.entity.name)
+    console.log(user.entity)
+    const lmao = data.data.findIndex((element) => element.name == user.entity)
     setValue("entityAux", lmao)
-    setValue("entity", data.data[lmao])
+    setValue("entity", user.entity)
 
   }
 
@@ -255,6 +256,27 @@ export default function CreateActivity({ handleCreateClose }) {
 
             </div>
           </div>
+          
+          <div className="adduser-input">
+            <label>
+              Cantidad de profesores a asistir (colegios):
+            </label>
+            <div>
+              <input className="add-input-2" type="number" min="1" max="5000" placeholder='cantidad de profesores'
+                {...register("teachersExpected", {
+                  required: 'ingrese la cantidad de profesores esperados',
+                  pattern: {
+                    value: /^[0-9]+$/,  // Esta regex solo permite números enteros
+                    message: 'Solo se permiten números'
+                  }
+                })}
+              />
+              <div>
+                {errors.teachersExpected && <span className="error-message">{errors.teachersExpected.message}</span>}
+              </div>
+
+            </div>
+          </div>
         </div>
 
         <div className="divider"></div>
@@ -282,7 +304,7 @@ export default function CreateActivity({ handleCreateClose }) {
             </label>
             <div>
               <input className="add-input-2" type="text" placeholder='nombre del sitio de la actividad'
-                minLength={5}
+                minLength={4}
                 maxLength={50}
                 {...register("activityPlace.name", {
                   required: 'ingrese el nombre del lugar de la actividad',
@@ -305,7 +327,7 @@ export default function CreateActivity({ handleCreateClose }) {
             </label>
             <div>
               <input className="add-input-2" type="text" placeholder='dirección del lugar'
-                minLength={5}
+                minLength={4}
                 maxLength={80}
                 {...register("activityPlace.address", {
                   required: 'ingrese direccion del lugar de la actividad',
@@ -363,7 +385,7 @@ export default function CreateActivity({ handleCreateClose }) {
                 </label>
                 <div>
                   <input
-                    minLength={5}
+                    minLength={4}
                     maxLength={50}
                     {...register(`schools.${index}.name`, {
                       required: 'ingrese el nombre de la escuela',

@@ -69,17 +69,18 @@ export default function EditActivity({ selectedUser, handleEditClose }) {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data)
 
       const res = await editUser(selectedUser._id, data)
 
       console.log(res.data)
 
-      /* reset() */
+      ToastSuccess("usuario editado correctamente")
+      handleEditClose()
+      reset()
     } catch (error) {
       console.log(error)
 
-      /* ToastError("error al crear semillero") */
+      ToastError("error al editar semillero")
     }
 
   }

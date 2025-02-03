@@ -6,7 +6,9 @@ import Modal from '@mui/material/Modal';
 import CreateUser from './createUser/CreateUser.jsx';
 import EditUser from './editUser/EditUser.jsx'
 import DeleteUser from './deleteUser/DeleteUser.jsx';
-import { getUsers } from '../../api/users.js';
+import { getUsers, getUsersFull } from '../../api/users.js';
+import { useAuth } from "../../context/authContext";
+import { getEntities } from '../../api/entity.js'
 
 import Pagination from '@mui/material/Pagination';
 
@@ -18,6 +20,11 @@ export default function Users() {
 
   const [selectedUser, setSelectedUser] = useState()
 
+  //admin options
+  const { user } = useAuth();
+  const [selectedEntity, setSelectedEntity] = useState("TODOS");
+  const [entities, setEntities] = useState([]);
+
   //variables for pagination
   const [total, setTotal] = useState()
   const [postsPerPage, setPostPerPage] = useState(10);
@@ -26,13 +33,12 @@ export default function Users() {
   // Change page
   const paginate = (e, value) => {
     setCurrentPage(value)
-    fetchingUsers((value - 1) * postsPerPage, postsPerPage)
-    console.log(currentPosts)
+    fetchingUsers((value - 1) * postsPerPage, postsPerPage, selectedEntity)
   }
 
   const handleCreateClose = async () => {
     setOpenCreate(false);
-    fetchingUsers()
+    fetchingUsers(0, postsPerPage, selectedEntity)
     setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
@@ -40,7 +46,7 @@ export default function Users() {
   }
   const handleEditClose = async () => {
     setOpenEdit(false);
-    fetchingUsers()
+    fetchingUsers(0, postsPerPage, selectedEntity)
     setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
@@ -48,19 +54,46 @@ export default function Users() {
   }
   const handleDeleteClose = async () => {
     setOpenDelete(false);
-    fetchingUsers()
+    fetchingUsers(0, postsPerPage, selectedEntity)
     setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
     setUsers(data.data) */
   }
 
-  const fetchingUsers = async (skip = 0, limit = postsPerPage) => {
+  const handleEntityChange = async (e) => {
+    setSelectedEntity(e.target.value)
+    fetchingUsers(0, postsPerPage, e.target.value)
+    setCurrentPage(1)
+  }
+
+  const fetchingEntities = async () => {
     try {
-      const data = await getUsers(skip, limit)
-      setUsers(data.data.documents)
-      setTotal(data.data.total)
+      const data = await getEntities(0,10000)
+      setEntities(data.data.documents)
       console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchingUsers = async (skip = 0, limit = postsPerPage, entity = "TODOS") => {
+    try {
+      //si eres super user
+      if (user.role.role <= 2 && entity != "TODOS") {
+        console.log(entity)
+        const data = await getUsersFull(skip, limit, entity)
+        setUsers(data.data.documents)
+        setTotal(data.data.total)
+
+        //si eres novato
+      } else {
+        const data = await getUsers(skip, limit)
+        setUsers(data.data.documents)
+        setTotal(data.data.total)
+        console.log(data)
+      }
+
     } catch (error) {
       console.log(error)
     }
@@ -68,6 +101,7 @@ export default function Users() {
 
   useEffect(() => {
     fetchingUsers()
+    fetchingEntities()
   }, [])
 
   return (
@@ -109,6 +143,28 @@ export default function Users() {
         </button>
       </div>
       <div className="activity-list">
+
+        {user.role.role <= 2 ?
+          <div>
+            Seleccione Entidad:
+            <select className=""
+              onChange={handleEntityChange}
+            >
+              <option value="TODOS" selected>TODOS</option>
+              {
+                entities.map((item, index) => {
+                  return <option key={item.id} value={item._id} >
+                    {item.name}
+                  </option>
+                })
+              }
+
+            </select>
+          </div>
+          : ""}
+
+
+
         <div className="pagination">
           <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
         </div>
@@ -151,7 +207,7 @@ export default function Users() {
                     </td>
                   </tr>
                 })
-                :""
+                  : ""
               }
             </tbody>
           </table >

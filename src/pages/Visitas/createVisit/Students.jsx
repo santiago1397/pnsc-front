@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Dpt from '../../../components/dpt/Dpt.jsx'
+import { validateDpt } from '../../../api/dpt.js';
 import "./createVisit.css"
 import * as XLSX from 'xlsx';
 import { downloadExcel } from '../../../api/downloadFile.js';
@@ -7,7 +8,7 @@ import DptTable from '../../../components/dpt/DptTable.jsx';
 
 export default function Students({ register, errors, arrayStudents, appendStudent, removeStudents, arraySchools, setValue, getValues, handleCreateClose, setError }) {
 
-   var shirtSize_options = [12,13,14,15,16,"S","M","L","XL","XXL"]
+  var shirtSize_options = ["12", "13", "14", "15", "16", 12, 13, 14, 15, 16, "S", "M", "L", "XL", "XXL"]
 
   function validateSchools(data) {
     if (arraySchools.includes(data)) {
@@ -32,11 +33,29 @@ export default function Students({ register, errors, arrayStudents, appendStuden
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
 
-    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    const startRow = 10; // Row 11 (0-indexed)
+
+    if (range.s.r <= startRow) { // Only adjust if the data starts before row 11
+      range.s.r = startRow;
+      worksheet['!ref'] = XLSX.utils.encode_range(range);
+    }
+
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 0 });
     console.log(jsonData)
 
+    //verifiying correct dpt
+    for (let i = 0; i < jsonData.length; i++) {
+      try {
+        const response = await validateDpt({ state: jsonData[i].state_aux, municipality: jsonData[i].municipality_aux, parish: jsonData[i].parish_aux })
+        if (response.status == 200) {
+          jsonData[i].homeLocation = { state: response.data.estado, municipality: response.data.municipio, parish: response.data.parroquia }
+        }
 
-
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
     for (let i = 0; i < jsonData.length; i++) {
       appendStudent({ ...jsonData[i] })
@@ -77,41 +96,44 @@ export default function Students({ register, errors, arrayStudents, appendStuden
         </button>
       </div>
 
-      <div style={{ overflow: 'auto' }}>
+      <div className="students-container" /* style={{ overflow: 'auto' }} */>
         <table className="students-responsive-table">
           <thead>
             <tr >
-              <th colspan="8">
+              <th colspan="14">
                 Datos estudiante:
               </th>
-              <th colspan="6">
+              <th colspan="9">
                 Datos representante:
-              </th>
-              <th colspan="3">
-                Datos vivienda:
               </th>
             </tr>
             <tr>
               <th>Escuela</th>
-              <th>Cédula</th>
               <th>Nombres</th>
               <th>Apellidos</th>
+              <th>Cédula</th>
               <th className="smaller-column">Edad</th>
               <th>Género</th>
               <th>Nivel Acaémico</th>
               <th>Talla de camisa</th>
+              <th>Posee algun tipo de discapacidad</th>
 
-              <th>Cédula</th>
+              <th>Dirección (vivienda)</th>
+              <th>Estado (vivienda)</th>
+              <th>Municipio (vivienda)</th>
+              <th>Parroquia (vivienda)</th>
+
+              <th>teléfono</th>
+
               <th>Nombres</th>
               <th>Apellidos</th>
+              <th>Cédula</th>
               <th>Edad</th>
               <th>Parentesco</th>
               <th>Teléfono</th>
-
-
-              <th>Estado</th>
-              <th>Municipio</th>
-              <th>Parroquia</th>
+              <th>Teléfono Laboral</th>
+              <th>Email</th>
+              <th>Profesión</th>
             </tr>
             <tr>
 
@@ -127,27 +149,18 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                   })}>
                     <option value="" disabled selected>Seleccione la escuela</option>
 
-                    {arraySchools.map((item, index) => (
-                      <option value={item.name} >{item.name}</option>
-                    ))}
+                    {arraySchools.map((item, index) => {
+
+
+                      return (<option value={item.name} >{item.name}</option>)
+                    })}
 
                   </select>
                   <div>
                     {errors?.students?.[index]?.school && <span className="students-errors">{errors?.students?.[index]?.school.message}</span>}
                   </div>
                 </td>
-                <td>
-                  <input style={{ width: "85px" }} {...register(`students.${index}.ci`, {
-                    required: 'ingrese la cedula',
-                    pattern: {
-                      value: /^\d{7,13}$/,
-                      message: "ingrese cedula valida"
-                    }
-                  })} placeholder='cédula' />
-                  <div>
-                    {errors?.students?.[index]?.ci && <span className="students-errors">{errors?.students?.[index]?.ci.message}</span>}
-                  </div>
-                </td>
+
                 <td>
                   <input {...register(`students.${index}.name`, {
                     required: 'ingrese el nombre',
@@ -162,6 +175,18 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                   })} placeholder='apellidos' />
                   <div>
                     {errors?.students?.[index]?.lastname && <span className="students-errors">{errors?.students?.[index]?.lastname.message}</span>}
+                  </div>
+                </td>
+                <td>
+                  <input style={{ width: "85px" }} {...register(`students.${index}.ci`, {
+                    required: 'ingrese la cedula',
+                    pattern: {
+                      value: /^\d{7,13}$/,
+                      message: "ingrese cedula valida"
+                    }
+                  })} placeholder='cédula' />
+                  <div>
+                    {errors?.students?.[index]?.ci && <span className="students-errors">{errors?.students?.[index]?.ci.message}</span>}
                   </div>
                 </td>
                 <td className="smaller-column">
@@ -239,16 +264,42 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                 </td>
 
                 <td>
-                  <input style={{ width: "85px" }} {...register(`students.${index}.representativeCI`,{
-                    pattern: {
-                      value: /^\d{7,8}$/,
-                      message: "ingrese cedula valida"
-                    }
+                  <input style={{ width: "85px" }} {...register(`students.${index}.disability`, {
                   })} />
                   <div>
-                    {errors?.students?.[index]?.representativeCI && <span className="students-errors">{errors?.students?.[index]?.representativeCI.message}</span>}
+                    {errors?.students?.[index]?.disability && <span className="students-errors">{errors?.students?.[index]?.disability.message}</span>}
                   </div>
                 </td>
+
+                <td>
+                  <input style={{ width: "85px" }} {...register(`students.${index}.homeLocation.address`, {
+                  })} />
+                  <div>
+                  </div>
+                </td>
+
+                <DptTable
+                  estado={`students.${index}.homeLocation.state`}
+                  municipio={`students.${index}.homeLocation.municipality`}
+                  parroquia={`students.${index}.homeLocation.parish`}
+                  setValue={setValue}
+                  getValues={getValues}
+                />
+
+                <td>
+                  <input style={{ width: "85px" }} {...register(`students.${index}.phone`, {
+                    pattern: {
+                      value: /^\d{11,12}$/,
+                      message: "ingrese un numero valido"
+                    }
+
+                  })} />
+                  <div>
+                    {errors?.students?.[index]?.phone && <span className="students-errors">{errors?.students?.[index]?.phone.message}</span>}
+                  </div>
+                </td>
+
+                
                 <td>
                   <input maxLength={50} {...register(`students.${index}.representativeName`)} />
                   <div>
@@ -261,12 +312,26 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                     {errors?.students?.[index]?.representativeLastName && <span className="students-errors">{errors?.students?.[index]?.representativeLastName.message}</span>}
                   </div>
                 </td>
+
+                <td>
+                  <input style={{ width: "85px" }} {...register(`students.${index}.representativeCI`, {
+                    pattern: {
+                      value: /^\d{7,8}$/,
+                      message: "ingrese cedula valida"
+                    }
+                  })} />
+                  <div>
+                    {errors?.students?.[index]?.representativeCI && <span className="students-errors">{errors?.students?.[index]?.representativeCI.message}</span>}
+                  </div>
+                </td>
+
                 <td>
                   <input type="number" className="smaller-column" {...register(`students.${index}.representativeAge`)} />
                   <div>
                     {errors?.students?.[index]?.representativeAge && <span className="students-errors">{errors?.students?.[index]?.representativeAge.message}</span>}
                   </div>
                 </td>
+
                 <td>
                   <input maxLength={50} style={{ width: "100px" }} {...register(`students.${index}.representativeKindred`)} />
                   <div>
@@ -274,26 +339,50 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                   </div>
                 </td>
                 <td>
-                  <input  style={{ width: "85px" }} {...register(`students.${index}.representativePhone`,{
+                  <input style={{ width: "85px" }} {...register(`students.${index}.representativePhone`, {
                     pattern: {
                       value: /^\d{11,12}$/,
                       message: "ingrese un numero valido"
                     }
-                    
+
                   })} />
                   <div>
                     {errors?.students?.[index]?.representativePhone && <span className="students-errors">{errors?.students?.[index]?.representativePhone.message}</span>}
                   </div>
                 </td>
+                <td>
+                  <input style={{ width: "85px" }} {...register(`students.${index}.representativePhone2`, {
+                    pattern: {
+                      value: /^\d{11,12}$/,
+                      message: "ingrese un numero valido"
+                    }
+
+                  })} />
+                  <div>
+                    {errors?.students?.[index]?.representativePhone2 && <span className="students-errors">{errors?.students?.[index]?.representativePhone2.message}</span>}
+                  </div>
+                </td>
+
+                <td>
+                  <input type="email" style={{ width: "85px" }} {...register(`students.${index}.representativeEmail`, {
+
+                  })} />
+                  <div>
+                    {errors?.students?.[index]?.representativeEmail && <span className="students-errors">{errors?.students?.[index]?.representativeEmail.message}</span>}
+                  </div>
+                </td>
+
+                <td>
+                  <input style={{ width: "85px" }} {...register(`students.${index}.representativeProfession`, {
+
+                  })} />
+                  <div>
+                    {errors?.students?.[index]?.representativeProfession && <span className="students-errors">{errors?.students?.[index]?.representativeProfession.message}</span>}
+                  </div>
+                </td>
 
                 {/* from here need to fix */}
-                <DptTable
-                  estado={`students.${index}.homeLocation.state`}
-                  municipio={`students.${index}.homeLocation.municipality`}
-                  parroquia={`students.${index}.homeLocation.parish`}
-                  setValue={setValue}
-                  getValues={getValues}
-                />
+
                 <td>
                   <button type="button" onClick={() => removeStudents(index)}>
                     Eliminar
@@ -303,6 +392,8 @@ export default function Students({ register, errors, arrayStudents, appendStuden
             ))}
           </tbody>
         </table>
+
+        <div class="scrollbar-wrapper"> <div class="scrollbar-area"></div></div>
       </div>
 
 

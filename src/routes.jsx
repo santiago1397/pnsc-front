@@ -45,7 +45,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 
 
 export const ProtectedRoute = () => {
-  const { isAuthenticated, loading, logout } = useAuth();
+  const { isAuthenticated, loading, logout, user } = useAuth();
 
   if (loading) return <h1>Loading...</h1>;
   if (!isAuthenticated && !loading) return <Navigate to="/login" replace />;
@@ -100,14 +100,21 @@ export const ProtectedRoute = () => {
             <GroupIcon fontSize="small" />
             Usuarios
           </button>
-          <button onClick={() => navigate(`/activities`)}>
-            <LightbulbIcon fontSize="small" />
-            Actividades Lúdicas
-          </button>
-          <button onClick={() => navigate(`/entity`)}>
-            <BusinessIcon fontSize="small" />
-            Entes
-          </button>
+          {
+            user.role.role <= 2 ?
+              <>
+                <button onClick={() => navigate(`/activities`)}>
+                  <LightbulbIcon fontSize="small" />
+                  Actividades Lúdicas
+                </button>
+                <button onClick={() => navigate(`/entity`)}>
+                  <BusinessIcon fontSize="small" />
+                  Entes
+                </button>
+              </>
+              : ""
+          }
+
           <button onClick={() => navigate(`/reports`)}>
             <AssessmentIcon fontSize="small" />
             Reportes

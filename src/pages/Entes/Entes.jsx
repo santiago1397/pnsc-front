@@ -7,6 +7,8 @@ import CreateEntity from './createEntity/CreateEntity.jsx';
 import EditEntity from './editEntity/EditEntity.jsx'
 import DeleteEntity from './deleteEntity/DeleteEntity.jsx';
 import { getEntities } from '../../api/entity.js'
+import Pagination from '@mui/material/Pagination';
+
 
 export default function Entes() {
   const [openCreate, setOpenCreate] = useState(false);
@@ -14,9 +16,24 @@ export default function Entes() {
   const [openDelete, setOpenDelete] = useState(false);
   const [entities, setEntities] = useState([])
 
+  const [selectedEntity, setSelectedEntity] = useState()
+
+  //variables for pagination
+  const [total, setTotal] = useState()
+  const [postsPerPage, setPostPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
+
+  // Change page
+  const paginate = (e, value) => {
+    setCurrentPage(value)
+    fetchingEntities((value - 1) * postsPerPage, postsPerPage)
+  }
+
   const handleCreateClose = async () => {
     setOpenCreate(false);
     fetchingEntities()
+    setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
     setUsers(data.data) */
@@ -24,6 +41,7 @@ export default function Entes() {
   const handleEditClose = async () => {
     setOpenEdit(false);
     fetchingEntities()
+    setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
     setUsers(data.data) */
@@ -31,16 +49,17 @@ export default function Entes() {
   const handleDeleteClose = async () => {
     setOpenDelete(false);
     fetchingEntities()
+    setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
     setUsers(data.data) */
   }
 
-  const fetchingEntities = async () => {
+  const fetchingEntities = async (skip = 0, limit = postsPerPage) => {
     try {
-      const data = await getEntities()
-      setEntities(data.data)
-      console.log(data)
+      const data = await getEntities(skip, limit)
+      setEntities(data.data.documents)
+      setTotal(data.data.total)
     } catch (error) {
       console.log(error)
     }
@@ -67,7 +86,7 @@ export default function Entes() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <EditEntity handleEditClose={handleEditClose} />
+        <EditEntity handleEditClose={handleEditClose} selectedEntity={selectedEntity} />
       </Modal>
 
       <Modal
@@ -90,7 +109,7 @@ export default function Entes() {
       </div>
       <div className="activity-list">
         <div className="pagination">
-          Pagination
+          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
         </div>
 
         <div>
@@ -114,12 +133,12 @@ export default function Entes() {
                       {element.acronim}
                     </td>
                     <td>
-                      {/* <Tooltip title="Boton de Modificar" onClick={(e) => { e.stopPropagation(); setOpenEdit(true); setUserDetails(item) }}>
-                  <IconButton size="small" aria-label="edit" >
-                    <ModeEditIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setUserDetails(item) }}>
+                      <Tooltip title="Boton de Modificar" onClick={(e) => { e.stopPropagation(); setOpenEdit(true); setSelectedEntity(element) }}>
+                        <IconButton size="small" aria-label="edit" >
+                          <ModeEditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      {/* <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setUserDetails(item) }}>
                   <IconButton size="small" aria-label="delete" >
                     <DeleteIcon fontSize="small" />
                   </IconButton>
@@ -137,7 +156,7 @@ export default function Entes() {
 
 
         <div className="pagination">
-          Pagination
+          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
         </div>
       </div>
     </div>
