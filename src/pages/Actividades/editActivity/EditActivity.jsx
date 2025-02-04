@@ -81,7 +81,7 @@ export default function EditActivity({ activity, handleEditClose }) {
               {...register("name", {
                 required: 'ingrese nombre de la actividad',
                 pattern: {
-                  value: /^[a-zA-Z0-9\s]+$/, // Regex pattern for letters and spaces only
+                  value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters and spaces only
                   message: 'Solo se permiten letras, espacios y numeros'
                 }
               })}
@@ -101,7 +101,7 @@ export default function EditActivity({ activity, handleEditClose }) {
             <textarea className="add-input-2" maxLength={150} rows={5} type="text" placeholder='descripción de la actividad'
               {...register("desc", {
                 pattern: {
-                  value: /^[a-zA-Z0-9\s]+$/, // Regex pattern for letters and spaces only
+                  value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters and spaces only
                   message: 'Solo se permiten letras, espacios y numeros'
                 }
               })}
@@ -130,7 +130,7 @@ export default function EditActivity({ activity, handleEditClose }) {
                 <input {...register(`subcategories.${index}.name`, {
                   required: 'ingrese el nombre de la subcategoria',
                   pattern: {
-                    value: /^[a-zA-Z0-9\s]+$/, // Regex pattern for letters and spaces only
+                    value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters and spaces only
                     message: 'Solo se permiten letras, espacios y numeros'
                   }
                 })} />

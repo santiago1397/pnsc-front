@@ -108,7 +108,7 @@ export default function Agendar() {
 
       <div className="activities-top">
         <h1>
-          RUTAS AGENDADAS
+          ACTIVIDADES PROGRAMADAS
         </h1>
         <button onClick={() => setOpenCreate(true)}>
           Agendar Ruta

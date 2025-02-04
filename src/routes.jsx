@@ -90,11 +90,11 @@ export const ProtectedRoute = () => {
         <div className="Navlinks">
           <button className="navlink" onClick={() => navigate(`/schedule`)}>
             <CalendarMonthIcon fontSize="small" />
-            Agendar Visita
+            Programar Actividad
           </button>
           <button onClick={() => navigate(`/visits`)}>
             <DirectionsBusIcon fontSize="small" />
-            Actividades Realizadas
+            Cargar Actividad
           </button>
           <button onClick={() => navigate(`/users`)}>
             <GroupIcon fontSize="small" />
@@ -105,7 +105,7 @@ export const ProtectedRoute = () => {
               <>
                 <button onClick={() => navigate(`/activities`)}>
                   <LightbulbIcon fontSize="small" />
-                  Actividades Lúdicas
+                  Categorías
                 </button>
                 <button onClick={() => navigate(`/entity`)}>
                   <BusinessIcon fontSize="small" />

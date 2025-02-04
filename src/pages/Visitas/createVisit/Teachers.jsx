@@ -7,7 +7,7 @@ import DptTable from '../../../components/dpt/DptTable.jsx';
 
 export default function Teachers({ register, errors, arrayTeachers, appendTeacher, removeTeacher, arraySchools, setValue, getValues, handleCreateClose, setError }) {
 
-  var shirtSize_options = [12, 13, 14, 15, 16, "S", "M", "L", "XL", "XXL"]
+  var shirtSize_options = ["12", "13", "14", "15", "16", 12, 13, 14, 15, 16, "S", "M", "L", "XL", "XXL"]
 
   function validateSchools(data) {
     if (arraySchools.includes(data)) {

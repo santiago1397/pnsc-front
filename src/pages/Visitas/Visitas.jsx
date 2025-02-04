@@ -134,13 +134,17 @@ export default function Visitas() {
 
       <div className="activities-top">
         <h1>
-          VISITAS REALIZADAS
+          ACTIVIDADES CARGADAS
         </h1>
         <button onClick={() => setOpenCreate(true)}>
           Reportar Actividad
         </button>
       </div>
       <div className="activity-list">
+
+        <div>
+          TOTAL: {total}
+        </div>
         <div className="pagination">
           <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
         </div>
