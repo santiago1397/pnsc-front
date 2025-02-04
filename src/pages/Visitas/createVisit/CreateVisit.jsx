@@ -199,6 +199,12 @@ export default function CreateVisit({ handleCreateClose }) {
         return
       }
 
+      if (data.students && data.students.length <= 0) {
+        ToastError("ingrese al menos un estudiante")
+        return
+      }
+
+      /* verifica si un estudiante ya fue cargado */
       const verification = await verifyStudents(data)
       console.log(verification)
 
