@@ -15,6 +15,8 @@ import { useAuth } from "../../../context/authContext";
 
 // falta la funcion para cerrar el modal
 export default function CreateActivity({ handleCreateClose }) {
+  const { user } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -27,27 +29,25 @@ export default function CreateActivity({ handleCreateClose }) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'schools',
-    defaultValue: [{}],
+    defaultValue: [{
+      "entity": user.entity
+    }],
   });
-  const { user } = useAuth();
 
   const [categories, setCategories] = useState([])
   const [subcategories, setSubCategories] = useState([])
   const [entities, setEntities] = useState([])
   const [flag, setFlag] = useState({})
 
-  console.log(user)
   const fetchCategories = async () => {
     const data = await getActivities(0, 1000)
     setCategories(data.data.documents)
   }
 
   const fetchEntities = async () => {
-    const data = await getEntities(0,10000)
-    console.log(data.data)
+    const data = await getEntities(0, 10000)
     setEntities(data.data.documents)
 
-    console.log(user.entity)
     const lmao = data.data.findIndex((element) => element.name == user.entity)
     setValue("entityAux", lmao)
     setValue("entity", user.entity)
@@ -78,10 +78,13 @@ export default function CreateActivity({ handleCreateClose }) {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data)
 
-      const res = await createSchedule(data)
-      console.log(res)
+      var res = {}
+      if (user.role.role > 2) {
+        res = await createSchedule({...data, entity: user.entity})
+      } else {
+        res = await createSchedule(data)
+      }
 
       ToastSuccess(res.data)
 
@@ -256,7 +259,7 @@ export default function CreateActivity({ handleCreateClose }) {
 
             </div>
           </div>
-          
+
           <div className="adduser-input">
             <label>
               Cantidad de profesores a asistir (colegios):
