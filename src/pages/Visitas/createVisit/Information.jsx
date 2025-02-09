@@ -8,9 +8,8 @@ import { useAuth } from "../../../context/authContext";
 import Dpt from '../../../components/dpt/Dpt.jsx'
 
 
-export default function Information({ register, errors, setValue, getValues, arraySchools, appendSchools, removeSchools, handleCreateClose }) {
+export default function Information({ watch, register, errors, setValue, getValues, arraySchools, appendSchools, removeSchools, handleCreateClose }) {
   const { user } = useAuth();
-  const [categories, setCategories] = useState([])
   const [entities, setEntities] = useState([])
   const [schedules, setSchedules] = useState([])
   const [activities, setActivities] = useState([])
@@ -19,15 +18,16 @@ export default function Information({ register, errors, setValue, getValues, arr
 
   const [rerender, setRerender] = useState(0);
 
-  const [subcategories, setSubCategories] = useState([])
+  const [categories, setCategories] = useState([])
+  const [subcategorieslvl1, setSubCategorieslvl1] = useState([])
+  const [subcategorieslvl2, setSubCategorieslvl2] = useState([])
+  const [subcategorieslvl3, setSubCategorieslvl3] = useState([])
 
 
   const fetchingSchedules = async () => {
     try {
       const data = await getSchedules(0, 1000)
       setSchedules(data.data.documents)
-
-      console.log(data.data.documents)
       /* console.log(data) */
     } catch (error) {
       /* console.log(error) */
@@ -35,19 +35,41 @@ export default function Information({ register, errors, setValue, getValues, arr
   }
 
   const fetchCategories = async () => {
-    const data = await getCategories()
-    setCategories(data.data)
+    const data = await getCategories(0,10000)
+    setCategories(data.data.documents)
   }
 
-  const handleActivitySelected = (e) => {
-    const index = e.target.value
-    setValue("activity", activities[index])
-  }
-
-  const handleActivitySelect = (e) => {
+  /* HANDLING SUBCATEGORIES */
+  const handleCategorySelect = (e) => {
+    setValue("category", e.target.value)
     const lmao = categories.filter((element) => element.name == e.target.value)
-    setSubCategories(lmao[0].subcategories)
+    setSubCategorieslvl1(lmao[0].subs)
+    setSubCategorieslvl2([])
+    setSubCategorieslvl3([])
+
+    setValue("subCategorylvl1", "")
+    setValue("subCategorylvl2", "")
+    setValue("subCategorylvl3", "")
   }
+  const handleSubCategorylvl1Select = (e) => {
+    setValue("subCategorylvl1", e.target.value)
+    const lmao = subcategorieslvl1.filter((element) => element.name == e.target.value)
+    setSubCategorieslvl2(lmao[0].subs)
+    setSubCategorieslvl3([])
+
+    setValue("subCategorylvl2", "")
+    setValue("subCategorylvl3", "")
+  }
+  const handleSubCategorylvl2Select = (e) => {
+    setValue("subCategorylvl2", e.target.value)
+    const lmao = subcategorieslvl2.filter((element) => element.name == e.target.value)
+    setSubCategorieslvl3(lmao[0].subs)
+    setValue("subCategorylvl3", "")
+  }
+  const handleSubCategorylvl3Select = (e) => {
+    setValue("subCategorylvl3", e.target.value)
+  }
+  /* HANDLING SUBCATEGORIES END */
 
   //esta monda esta fea, hay que arreglarlo
   const handleScheduleSelected = (e) => {
@@ -62,7 +84,7 @@ export default function Information({ register, errors, setValue, getValues, arr
     setValue("studentsExpected", schedules[index].studentSpected)
     setValue("teachersExpected", schedules[index].teachersExpected)
     setValue("activityDate", new Date(schedules[index].activityDate).toISOString().split('T')[0])
-    setValue("ludicActivity", schedules[index].activity)
+    /* setValue("ludicActivity", schedules[index].activity)
     setValue("subActivity", schedules[index].subActivity)
 
 
@@ -71,7 +93,22 @@ export default function Information({ register, errors, setValue, getValues, arr
 
 
     setSubCategories(schedules[index].activity.subcategories)
-    setValue("activity", schedules[index].activity)
+    setValue("activity", schedules[index].activity) */
+
+
+    const first = categories.filter((element) => element.name == schedules[index].category)
+    setSubCategorieslvl1(first[0].subs)
+    const second =first[0].subs.filter((element) => element.name == schedules[index].subCategorylvl1)
+    setSubCategorieslvl2(second[0].subs)
+    const third = second[0].subs.filter((element) => element.name == schedules[index].subCategorylvl2)
+    setSubCategorieslvl3(third[0].subs)
+    
+    setValue("category", schedules[index].category)
+    setValue("subCategorylvl1", schedules[index].subCategorylvl1)
+    setValue("subCategorylvl2", schedules[index].subCategorylvl2)
+    setValue("subCategorylvl3", schedules[index].subCategorylvl3)
+
+    
 
     console.log(schedules[index].entity.name)
     const indexEntity = entities.findIndex((element) => element.name === (schedules[index].entity.name))
@@ -101,7 +138,7 @@ export default function Information({ register, errors, setValue, getValues, arr
   }
 
   const fetchEntities = async () => {
-    const data = await getEntities(0,10000)
+    const data = await getEntities(0, 10000)
     /* console.log(data.data) */
     setEntities(data.data.documents)
   }
@@ -120,7 +157,7 @@ export default function Information({ register, errors, setValue, getValues, arr
     fetchCategories()
     fetchEntities()
     setDefaultEntity()
-    fetchActivities()
+    /* fetchActivities() */
   }, [])
 
 
@@ -191,46 +228,22 @@ export default function Information({ register, errors, setValue, getValues, arr
           </div>
         </div>
 
-        <div className="adduser-input">
-          <label>
-            Categoría:
-          </label>
-          <div>
-            <select className="" {...register("ludicActivityAux", {
-              required: 'seleccione la categoría',
-              pattern: {}
-            })}
-              onChange={(e) => handleActivitySelected(e)}
-            >
-              <option value="" disabled selected>Seleccione la Categoría</option>
-              {
-                activities.map((item, index) => {
-                  return <option key={item.name} value={index} >
-                    {item.name}
-                  </option>
-                })
-              }
-
-            </select>
-            {errors.ludicActivityAux && <span className="error-message">{errors.ludicActivityAux.message}</span>}
-
-          </div>
-        </div>
-
-        {subcategories.length > 0 ?
+        <div className="category-style">
           <div className="adduser-input">
             <label>
-              Sub-Categoria:
+              Categoria:
             </label>
             <div>
-              <select className="" {...register("subActivity", {
+              <select className="" {...register("category", {
                 required: 'seleccione la categoria',
                 pattern: {}
-              })}>
+              })}
+                value={watch("category")}
+                onChange={handleCategorySelect}>
                 <option value="" disabled selected>Seleccione la categoría</option>
                 {
-                  subcategories.map((item) => {
-                    return <option key={item.name} value={item.name} >
+                  categories.map((item, index) => {
+                    return <option key={index} value={item.name} >
                       {item.name}
                     </option>
                   })
@@ -238,12 +251,102 @@ export default function Information({ register, errors, setValue, getValues, arr
 
               </select>
               <div>
-                {errors.subActivity && <span className="error-message">{errors.subActivity.message}</span>}
+                {errors.activityAux && <span className="error-message">{errors.activityAux.message}</span>}
               </div>
 
             </div>
           </div>
-          : ""}
+          {subcategorieslvl1.length > 0 ?
+            <div className="adduser-input">
+              <label>
+                Sub-Categoria (1era):
+              </label>
+              <div>
+                <select className="" {...register("subCategorylvl1", {
+                  required: 'seleccione la categoria',
+                  pattern: {}
+                })}
+                  value={watch("subCategorylvl1")}
+                  onChange={handleSubCategorylvl1Select}>
+                  <option value="" disabled selected>Seleccione la categoría</option>
+                  {
+                    subcategorieslvl1.map((item, index) => {
+                      return <option key={index} value={item.name} >
+                        {item.name}
+                      </option>
+                    })
+                  }
+
+                </select>
+                <div>
+                  {errors.subActivity && <span className="error-message">{errors.subActivity.message}</span>}
+                </div>
+
+              </div>
+            </div>
+            : ""}
+
+          {subcategorieslvl2.length > 0 ?
+            <div className="adduser-input">
+              <label>
+                Sub-Categoria (2da):
+              </label>
+              <div>
+                <select className="" {...register("subCategorylvl2", {
+                  required: 'seleccione la categoria',
+                  pattern: {}
+                })}
+                  value={watch("subCategorylvl2")}
+                  onChange={handleSubCategorylvl2Select}>
+                  <option value="" disabled selected>Seleccione la categoría</option>
+                  {
+                    subcategorieslvl2.map((item, index) => {
+                      return <option key={index} value={item.name} >
+                        {item.name}
+                      </option>
+                    })
+                  }
+
+                </select>
+                <div>
+                  {errors.subActivity && <span className="error-message">{errors.subActivity.message}</span>}
+                </div>
+
+              </div>
+            </div>
+            : ""}
+
+          {subcategorieslvl3.length > 0 ?
+            <div className="adduser-input">
+              <label>
+                Sub-Categoria (3era):
+              </label>
+              <div>
+                <select className="" {...register("subCategorylvl3", {
+                  required: 'seleccione la categoria',
+                  pattern: {}
+                })}
+                  onChange={handleSubCategorylvl3Select}
+                  value={watch("subCategorylvl3")}
+                >
+                  <option value="" disabled selected>Seleccione la categoría</option>
+                  {
+                    subcategorieslvl3.map((item, index) => {
+                      return <option key={index} value={item.name} >
+                        {item.name}
+                      </option>
+                    })
+                  }
+
+                </select>
+                <div>
+                  {errors.subActivity && <span className="error-message">{errors.subActivity.message}</span>}
+                </div>
+
+              </div>
+            </div>
+            : ""}
+        </div>
 
 
         {/*  <div className="adduser-input">
@@ -399,9 +502,9 @@ export default function Information({ register, errors, setValue, getValues, arr
             </label>
             <div>
               <input {...register(`schools.${index}.name`, {
-              required: 'introduzca nombre',
-            })}  onChange={(()=> setRerender(rerender + 1))}/>
-            {errors?.schools?.[index]?.name && <span className="students-errors">{errors?.schools?.[index]?.name.message}</span>}
+                required: 'introduzca nombre',
+              })} onChange={(() => setRerender(rerender + 1))} />
+              {errors?.schools?.[index]?.name && <span className="students-errors">{errors?.schools?.[index]?.name.message}</span>}
 
             </div>
           </div>

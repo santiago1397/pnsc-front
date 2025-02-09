@@ -9,6 +9,10 @@ import DeleteActivity from './deleteActivity/DeleteActivity.jsx';
 import './actividades.css'
 import { getActivities } from '../../api/activities.js'
 import Pagination from '@mui/material/Pagination';
+import CreateCategory from './createActivity/CreateCategory.jsx';
+import EditCategory from './editActivity/EditCategory.jsx';
+import { getCategories } from '../../api/category.js';
+
 
 
 export default function Actividades() {
@@ -58,7 +62,7 @@ export default function Actividades() {
 
   const fetchingActivities = async (skip = 0, limit = postsPerPage) => {
     try {
-      const data = await getActivities(skip, limit)
+      const data = await getCategories(skip, limit)
       setActivities(data.data.documents)
       setTotal(data.data.total)
 
@@ -80,7 +84,7 @@ export default function Actividades() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <CreateActivity handleCreateClose={handleCreateClose} />
+        <CreateCategory handleCreateClose={handleCreateClose} />
       </Modal>
 
       <Modal
@@ -89,7 +93,7 @@ export default function Actividades() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <EditActivity activity={selectedActivity} handleEditClose={handleEditClose} />
+        <EditCategory activity={selectedActivity} handleEditClose={handleEditClose} />
       </Modal>
 
       <Modal
@@ -125,8 +129,8 @@ export default function Actividades() {
               </tr>
             </thead>
             <tbody>
-              {activities.map((element) => {
-                return <tr >
+              {activities.map((element,index) => {
+                return <tr key={index}>
                   <td>
                     {element.name}
                   </td>

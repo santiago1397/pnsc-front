@@ -156,7 +156,7 @@ export default function Agendar() {
                       {element.activityName}
                     </td>
                     <td>
-                      {element.activity.name}
+                      {/* element.activity.name */}
                     </td>
                     <td>
                       {element.activityPlace.name}

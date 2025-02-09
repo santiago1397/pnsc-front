@@ -40,9 +40,9 @@ export default function EditActivity({ selectedUser, handleEditClose }) {
 
 
   const fetchEntities = async () => {
-    const data = await getEntities()
+    const data = await getEntities(0, 10000)
     console.log(data.data)
-    setEntities(data.data)
+    setEntities(data.data.documents)
 
     /* console.log(user)
 

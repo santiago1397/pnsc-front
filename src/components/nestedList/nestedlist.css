@@ -1,0 +1,18 @@
+ul {
+    /* Or ol, or the specific list you want to target */
+    list-style: none;
+}
+
+
+.item-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(202, 202, 202);
+    border-bottom: 1px solid black;
+}
+
+.label-container{
+    display: flex;
+    align-items: center;
+}

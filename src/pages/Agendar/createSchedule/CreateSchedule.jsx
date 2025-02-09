@@ -13,11 +13,13 @@ import Dpt from '../../../components/dpt/Dpt.jsx'
 import { useAuth } from "../../../context/authContext";
 
 
+
 // falta la funcion para cerrar el modal
 export default function CreateActivity({ handleCreateClose }) {
   const { user } = useAuth();
 
   const {
+    watch,
     register,
     handleSubmit,
     setValue,
@@ -35,12 +37,17 @@ export default function CreateActivity({ handleCreateClose }) {
   });
 
   const [categories, setCategories] = useState([])
-  const [subcategories, setSubCategories] = useState([])
+  const [subcategorieslvl1, setSubCategorieslvl1] = useState([])
+  const [subcategorieslvl2, setSubCategorieslvl2] = useState([])
+  const [subcategorieslvl3, setSubCategorieslvl3] = useState([])
+
+
+
   const [entities, setEntities] = useState([])
   const [flag, setFlag] = useState({})
 
   const fetchCategories = async () => {
-    const data = await getActivities(0, 1000)
+    const data = await getCategories(0, 1000)
     setCategories(data.data.documents)
   }
 
@@ -64,12 +71,37 @@ export default function CreateActivity({ handleCreateClose }) {
     })
   }
 
-  const handleActivitySelect = (e) => {
+  /* HANDLING SUBCATEGORIES */
+  const handleCategorySelect = (e) => {
+    setValue("category", e.target.value)
     const lmao = categories.filter((element) => element.name == e.target.value)
-    setValue("activity", lmao[0])
-    setSubCategories(lmao[0].subcategories)
-  }
+    setSubCategorieslvl1(lmao[0].subs)
+    setSubCategorieslvl2([])
+    setSubCategorieslvl3([])
 
+    setValue("subCategorylvl1", "")
+    setValue("subCategorylvl2", "")
+    setValue("subCategorylvl3", "")
+  }
+  const handleSubCategorylvl1Select = (e) => {
+    setValue("subCategorylvl1", e.target.value)
+    const lmao = subcategorieslvl1.filter((element) => element.name == e.target.value)
+    setSubCategorieslvl2(lmao[0].subs)
+    setSubCategorieslvl3([])
+
+    setValue("subCategorylvl2", "")
+    setValue("subCategorylvl3", "")
+  }
+  const handleSubCategorylvl2Select = (e) => {
+    setValue("subCategorylvl2", e.target.value)
+    const lmao = subcategorieslvl2.filter((element) => element.name == e.target.value)
+    setSubCategorieslvl3(lmao[0].subs)
+    setValue("subCategorylvl3", "")
+  }
+  const handleSubCategorylvl3Select = (e) => {
+    setValue("subCategorylvl3", e.target.value)
+  }
+  /* HANDLING SUBCATEGORIES END */
 
   useEffect(() => {
     fetchCategories()
@@ -78,10 +110,10 @@ export default function CreateActivity({ handleCreateClose }) {
 
   const onSubmit = async (data) => {
     try {
-
+      console.log(data)
       var res = {}
       if (user.role.role > 2) {
-        res = await createSchedule({...data, entity: user.entity})
+        res = await createSchedule({ ...data, entity: user.entity })
       } else {
         res = await createSchedule(data)
       }
@@ -89,7 +121,7 @@ export default function CreateActivity({ handleCreateClose }) {
       ToastSuccess(res.data)
 
       handleCreateClose()
-      /* reset() */
+      reset()
     } catch (error) {
       console.log(error)
 
@@ -154,23 +186,22 @@ export default function CreateActivity({ handleCreateClose }) {
 
             </div>
           </div>
-
           <div className="category-style">
             <div className="adduser-input">
               <label>
                 Categoria:
               </label>
               <div>
-                <select className="" {...register("activityAux", {
+                <select className="" {...register("category", {
                   required: 'seleccione la categoria',
                   pattern: {}
                 })}
-
-                  onChange={handleActivitySelect}>
+                  value={watch("category")}
+                  onChange={handleCategorySelect}>
                   <option value="" disabled selected>Seleccione la categoría</option>
                   {
-                    categories.map((item) => {
-                      return <option key={item.name} value={item.name} >
+                    categories.map((item,index) => {
+                      return <option key={index} value={item.name} >
                         {item.name}
                       </option>
                     })
@@ -183,20 +214,83 @@ export default function CreateActivity({ handleCreateClose }) {
 
               </div>
             </div>
-            {subcategories.length > 0 ?
+            {subcategorieslvl1.length > 0 ?
               <div className="adduser-input">
                 <label>
-                  Sub-Categoria:
+                  Sub-Categoria (1era):
                 </label>
                 <div>
-                  <select className="" {...register("subActivity", {
+                  <select className="" {...register("subCategorylvl1", {
                     required: 'seleccione la categoria',
                     pattern: {}
-                  })}>
+                  })}
+                    value={watch("subCategorylvl1")}
+                    onChange={handleSubCategorylvl1Select}>
                     <option value="" disabled selected>Seleccione la categoría</option>
                     {
-                      subcategories.map((item) => {
-                        return <option key={item.name} value={item.name} >
+                      subcategorieslvl1.map((item, index) => {
+                        return <option key={index} value={item.name} >
+                          {item.name}
+                        </option>
+                      })
+                    }
+
+                  </select>
+                  <div>
+                    {errors.subActivity && <span className="error-message">{errors.subActivity.message}</span>}
+                  </div>
+
+                </div>
+              </div>
+              : ""}
+
+            {subcategorieslvl2.length > 0 ?
+              <div className="adduser-input">
+                <label>
+                  Sub-Categoria (2da):
+                </label>
+                <div>
+                  <select className="" {...register("subCategorylvl2", {
+                    required: 'seleccione la categoria',
+                    pattern: {}
+                  })} 
+                  value={watch("subCategorylvl2")}
+                  onChange={handleSubCategorylvl2Select}>
+                    <option value="" disabled selected>Seleccione la categoría</option>
+                    {
+                      subcategorieslvl2.map((item, index) => {
+                        return <option key={index} value={item.name} >
+                          {item.name}
+                        </option>
+                      })
+                    }
+
+                  </select>
+                  <div>
+                    {errors.subActivity && <span className="error-message">{errors.subActivity.message}</span>}
+                  </div>
+
+                </div>
+              </div>
+              : ""}
+
+            {subcategorieslvl3.length > 0 ?
+              <div className="adduser-input">
+                <label>
+                  Sub-Categoria (3era):
+                </label>
+                <div>
+                  <select className="" {...register("subCategorylvl3", {
+                    required: 'seleccione la categoria',
+                    pattern: {}
+                  })}
+                    onChange={handleSubCategorylvl3Select}
+                    value={watch("subCategorylvl3")}
+                  >
+                    <option value="" disabled selected>Seleccione la categoría</option>
+                    {
+                      subcategorieslvl3.map((item, index) => {
+                        return <option key={index} value={item.name} >
                           {item.name}
                         </option>
                       })
@@ -211,6 +305,7 @@ export default function CreateActivity({ handleCreateClose }) {
               </div>
               : ""}
           </div>
+
 
           {user.role.role <= 2 ?
             <div className="adduser-input">

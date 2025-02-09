@@ -184,7 +184,7 @@ export default function Visitas() {
                       {element.activityName}
                     </td>
                     <td>
-                      {element.activity.name}
+                      {/* element.activity.name */}
                     </td>
                     <td>
                       {element.activityPlace.name}

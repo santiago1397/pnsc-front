@@ -47,10 +47,12 @@ export default function ViewVisit({ handleDetailsClose, selectedVisit }) {
 
       <div>
         <div>
-          Tipo de Actividad: {selectedVisit.activity.name}
+          Tipo de Actividad: {selectedVisit.category}
         </div>
         <div>
-          {selectedVisit.subActivity}
+          {selectedVisit.subCategorylvl1}
+          {selectedVisit.subCategorylvl2}
+          {selectedVisit.subCategorylvl3}
         </div>
       </div>
 

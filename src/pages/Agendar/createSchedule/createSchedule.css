@@ -73,6 +73,7 @@
 }
 
 .category-style {
+    flex-wrap: wrap;
     display: flex;
     gap: 10px;
 }

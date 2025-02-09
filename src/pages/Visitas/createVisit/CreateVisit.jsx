@@ -32,6 +32,7 @@ export default function CreateVisit({ handleCreateClose }) {
   const [subcategories, setSubCategories] = useState([])
 
   const {
+    watch,
     register,
     handleSubmit,
     setValue,
@@ -92,7 +93,7 @@ export default function CreateVisit({ handleCreateClose }) {
   }
 
   const fetchEntities = async () => {
-    const data = await getEntities(0,10000)
+    const data = await getEntities(0, 10000)
     /* console.log(data.data) */
     setEntities(data.data.documents)
   }
@@ -132,6 +133,7 @@ export default function CreateVisit({ handleCreateClose }) {
 
   const { currentStepIndex, step, steps, isFirstStep, isLastStep, next, back, } = useMultistepForm([
     <Information
+      watch={watch}
       register={register}
       errors={errors}
       setValue={setValue}
@@ -215,9 +217,9 @@ export default function CreateVisit({ handleCreateClose }) {
       reset()
     } catch (error) {
       console.log(error)
-      if( error.response.status ==406){
+      if (error.response.status == 406) {
         ToastError(`Estudiante ${error.response.data.student.name} ya se encuentra registrado`)
-      }else{
+      } else {
         ToastError("error al cargar visita")
       }
 
