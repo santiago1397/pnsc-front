@@ -190,10 +190,11 @@ export default function CreateVisit({ handleCreateClose }) {
       /* Validaciones de Duplicados */
       const nameSet = new Set();
       const hasDuplicates = data.students.some(field => {
-        if (nameSet.has(field.name + field.lastName + field.ci)) {
+        if (nameSet.has(field.ci)) {
+          console.log(field.ci)
           return true;
         }
-        nameSet.add(field.name + field.lastName + field.ci);
+        nameSet.add(field.ci);
         return false;
       });
       if (hasDuplicates) {

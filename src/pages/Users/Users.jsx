@@ -182,8 +182,8 @@ export default function Users() {
             </thead>
             <tbody>
               {
-                users ? users.map((element) => {
-                  return <tr >
+                users ? users.map((element, index) => {
+                  return <tr key={index}>
                     <td>
                       {element.name} {element.lastName}
                     </td>

@@ -2,7 +2,9 @@ import axios from "./axios";
 
 export const createVisit = async (visit) => axios.post("/visits", visit);
 export const getVisits = async (skip,limit) => axios.get(`/visits/${skip}/${limit}`);
+export const getVisitsFull = async (skip, limit, entity) => axios.get(`/visits/${skip}/${limit}?entity=${entity}`);
 export const verifyStudents = async (visit) => axios.post("/visits/verify", visit);
+export const deleteVisit = async (id) => axios.delete(`/visits/${id}`);
 
 
 

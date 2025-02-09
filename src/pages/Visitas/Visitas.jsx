@@ -7,7 +7,7 @@ import CreateVisit from './createVisit/CreateVisit.jsx';
 import DeleteVisit from './deleteVisit/DeleteVisit.jsx';
 import { DateTime } from "luxon";
 import { getEntities } from '../../api/entity.js'
-import { getVisits } from '../../api/visits.js';
+import { getVisits, getVisitsFull } from '../../api/visits.js';
 import Pagination from '@mui/material/Pagination';
 import { useAuth } from "../../context/authContext";
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -24,10 +24,12 @@ export default function Visitas() {
   const [openDelete, setOpenDelete] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
 
-  const [activities, setActivities] = useState([])
-
   const [visits, setVisits] = useState([])
   const [selectedVisit, setSelectedVisit] = useState()
+
+  //admin options
+  const [selectedEntity, setSelectedEntity] = useState("TODOS");
+  const [entities, setEntities] = useState([]);
 
   //variables for pagination
   const [total, setTotal] = useState()
@@ -38,7 +40,7 @@ export default function Visitas() {
   // Change page
   const paginate = (e, value) => {
     setCurrentPage(value)
-    fetchingSchedules((value - 1) * postsPerPage, postsPerPage)
+    fetchingSchedules((value - 1) * postsPerPage, postsPerPage, selectedEntity)
     console.log(currentPosts)
   }
 
@@ -50,7 +52,7 @@ export default function Visitas() {
   }
   const handleCreateClose = async () => {
     setOpenCreate(false);
-    fetchingVisits()
+    fetchingVisits(0, postsPerPage, selectedEntity)
     setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
@@ -58,7 +60,7 @@ export default function Visitas() {
   }
   const handleEditClose = async () => {
     setOpenEdit(false);
-    fetchingVisits()
+    fetchingVisits(0, postsPerPage, selectedEntity)
     setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
@@ -66,21 +68,45 @@ export default function Visitas() {
   }
   const handleDeleteClose = async () => {
     setOpenDelete(false);
-    fetchingVisits()
+    fetchingVisits(0, postsPerPage, selectedEntity)
     setCurrentPage(1)
     /* const data = await getUsers(id)
     setFilteredUSers(data.data)
     setUsers(data.data) */
   }
 
-  const fetchingVisits = async (skip = 0, limit = postsPerPage) => {
+  const handleEntityChange = async (e) => {
+    setSelectedEntity(e.target.value)
+    fetchingVisits(0, postsPerPage, e.target.value)
+    setCurrentPage(1)
+  }
+
+  const fetchingEntities = async () => {
     try {
-      const data = await getVisits(skip, limit)
-      console.log(
-        data.data.documents
-      )
-      setVisits(data.data.documents)
-      setTotal(data.data.total)
+      const data = await getEntities(0, 10000)
+      setEntities(data.data.documents)
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchingVisits = async (skip = 0, limit = postsPerPage, entity = "TODOS") => {
+    try {
+
+      if (user.role.role <= 2 && entity != "TODOS") {
+        console.log(entity)
+        const data = await getVisitsFull(skip, limit, entity)
+        setVisits(data.data.documents)
+        setTotal(data.data.total)
+
+        //si eres novato
+      } else {
+        const data = await getVisits(skip, limit)
+        setVisits(data.data.documents)
+        setTotal(data.data.total)
+      }
+
     } catch (error) {
       console.log(error)
     }
@@ -88,6 +114,7 @@ export default function Visitas() {
 
   useEffect(() => {
     fetchingVisits()
+    fetchingEntities()
   }, [])
 
   return (
@@ -145,6 +172,25 @@ export default function Visitas() {
         <div>
           TOTAL: {total}
         </div>
+
+        {user.role.role <= 2 ?
+          <div>
+            Seleccione Entidad:
+            <select className=""
+              onChange={handleEntityChange}
+            >
+              <option value="TODOS" selected>TODOS</option>
+              {
+                entities.map((item, index) => {
+                  return <option key={item.id} value={item.name} >
+                    {item.name}
+                  </option>
+                })
+              }
+
+            </select>
+          </div>
+          : ""}
         <div className="pagination">
           <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
         </div>
@@ -219,11 +265,16 @@ export default function Visitas() {
                           <VisibilityIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setSelectedVisit(element) }}>
-                        <IconButton size="small" aria-label="delete" >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+
+                      {
+                        user.role.role <= 2 ?
+                          <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setSelectedVisit(element) }}>
+                            <IconButton size="small" aria-label="delete" >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip> : ""
+                      }
+
 
                     </td>
                   </tr>

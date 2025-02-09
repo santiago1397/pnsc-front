@@ -113,9 +113,9 @@ export default function CreateActivity({ handleCreateClose }) {
       console.log(data)
       var res = {}
       if (user.role.role > 2) {
-        res = await createSchedule({ ...data, entity: user.entity })
+        res = await createSchedule({ ...data, entity: user.entity, user: user.email })
       } else {
-        res = await createSchedule(data)
+        res = await createSchedule({ ...data, user: user.email })
       }
 
       ToastSuccess(res.data)
@@ -200,7 +200,7 @@ export default function CreateActivity({ handleCreateClose }) {
                   onChange={handleCategorySelect}>
                   <option value="" disabled selected>Seleccione la categoría</option>
                   {
-                    categories.map((item,index) => {
+                    categories.map((item, index) => {
                       return <option key={index} value={item.name} >
                         {item.name}
                       </option>
@@ -253,9 +253,9 @@ export default function CreateActivity({ handleCreateClose }) {
                   <select className="" {...register("subCategorylvl2", {
                     required: 'seleccione la categoria',
                     pattern: {}
-                  })} 
-                  value={watch("subCategorylvl2")}
-                  onChange={handleSubCategorylvl2Select}>
+                  })}
+                    value={watch("subCategorylvl2")}
+                    onChange={handleSubCategorylvl2Select}>
                     <option value="" disabled selected>Seleccione la categoría</option>
                     {
                       subcategorieslvl2.map((item, index) => {

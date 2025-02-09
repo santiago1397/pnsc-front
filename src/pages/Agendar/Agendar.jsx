@@ -6,11 +6,14 @@ import Modal from '@mui/material/Modal';
 import CreateSchedule from './createSchedule/CreateSchedule.jsx';
 /* import EditEntity from './editEntity/EditEntity.jsx' */
 import DeleteSchedule from './deleteSchedule/DeleteSchedule.jsx';
-import { getSchedules } from '../../api/schedule.js'
+import { getSchedules, getSchedulesFull } from '../../api/schedule.js'
 import { DateTime } from "luxon";
 import Pagination from '@mui/material/Pagination';
 import { useAuth } from "../../context/authContext";
+import { getEntities } from '../../api/entity.js';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import "./agendar.css"
+import ViewSchedule from './viewSchedule/ViewSchedule.jsx';
 
 export default function Agendar() {
 
@@ -20,8 +23,16 @@ export default function Agendar() {
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
+
   const [schedules, setSchedules] = useState([])
   const [selectedSchedule, setSelectedSchedule] = useState()
+
+
+  //admin options
+  const [selectedEntity, setSelectedEntity] = useState("TODOS");
+  const [entities, setEntities] = useState([]);
+
 
   //variables for pagination
   const [total, setTotal] = useState()
@@ -32,38 +43,61 @@ export default function Agendar() {
   // Change page
   const paginate = (e, value) => {
     setCurrentPage(value)
-    fetchingSchedules((value - 1) * postsPerPage, postsPerPage)
+    fetchingSchedules((value - 1) * postsPerPage, postsPerPage, selectedEntity)
     console.log(currentPosts)
   }
 
+  const handleDetailsClose = async () => {
+    setOpenDetails(false);
+  }
 
   const handleCreateClose = async () => {
     setOpenCreate(false);
-    fetchingSchedules()
+    fetchingSchedules(0, postsPerPage, selectedEntity)
     setCurrentPage(1)
-    /* const data = await getUsers(id)
-    setFilteredUSers(data.data)
-    setUsers(data.data) */
+
   }
 
   const handleDeleteClose = async () => {
     setOpenDelete(false);
-    fetchingSchedules()
+    fetchingSchedules(0, postsPerPage, selectedEntity)
     setCurrentPage(1)
-    /* const data = await getUsers(id)
-    setFilteredUSers(data.data)
-    setUsers(data.data) */
+
   }
 
+  const handleEntityChange = async (e) => {
+    setSelectedEntity(e.target.value)
+    fetchingSchedules(0, postsPerPage, e.target.value)
+    setCurrentPage(1)
+  }
 
-  const fetchingSchedules = async (skip = 0, limit = postsPerPage) => {
+  const fetchingEntities = async () => {
     try {
-      const data = await getSchedules(skip, limit)
-      console.log(
-        data.data.documents
-      )
-      setSchedules(data.data.documents)
-      setTotal(data.data.total)
+      const data = await getEntities(0, 10000)
+      setEntities(data.data.documents)
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchingSchedules = async (skip = 0, limit = postsPerPage, entity = "TODOS") => {
+    try {
+
+      if (user.role.role <= 2 && entity != "TODOS") {
+        console.log(entity)
+        const data = await getSchedulesFull(skip, limit, entity)
+        setSchedules(data.data.documents)
+        setTotal(data.data.total)
+
+        //si eres novato
+      } else {
+        const data = await getSchedules(skip, limit)
+        setSchedules(data.data.documents)
+        setTotal(data.data.total)
+        console.log(data)
+      }
+
     } catch (error) {
       console.log(error)
     }
@@ -71,10 +105,22 @@ export default function Agendar() {
 
   useEffect(() => {
     fetchingSchedules()
+    fetchingEntities()
   }, [])
 
   return (
     <div>
+
+      <Modal
+        open={openDetails}
+        onClose={handleDetailsClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <ViewSchedule handleDetailsClose={handleDetailsClose} selectedSchedule={selectedSchedule} />
+      </Modal>
+
+
       <Modal
         open={openCreate}
         onClose={handleCreateClose}
@@ -115,6 +161,27 @@ export default function Agendar() {
         </button>
       </div>
       <div className="activity-list">
+
+        {user.role.role <= 2 ?
+          <div>
+            Seleccione Entidad:
+            <select className=""
+              onChange={handleEntityChange}
+            >
+              <option value="TODOS" selected>TODOS</option>
+              {
+                entities.map((item, index) => {
+                  return <option key={item.id} value={item.name} >
+                    {item.name}
+                  </option>
+                })
+              }
+
+            </select>
+          </div>
+          : ""}
+
+
         <div className="pagination">
           <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
         </div>
@@ -183,6 +250,11 @@ export default function Agendar() {
                       {element.studentSpected}
                     </td>
                     <td>
+                      <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDetails(true); setSelectedSchedule(element) }}>
+                        <IconButton size="small" aria-label="delete" >
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
                       {/* <Tooltip title="Boton de Modificar" onClick={(e) => { e.stopPropagation(); setOpenEdit(true); setUserDetails(item) }}>
                   <IconButton size="small" aria-label="edit" >
                     <ModeEditIcon fontSize="small" />

@@ -8,10 +8,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import { createUser } from '../../../api/users.js';
 import { getEntities } from '../../../api/entity.js';
 import { getRoles } from '../../../api/roles.js';
+import { useAuth } from '../../../context/authContext.jsx';
 
 
 // falta la funcion para cerrar el modal
 export default function CreateActivity({ handleCreateClose }) {
+  const { user } = useAuth();
   const [entities, setEntities] = useState([])
   const [roles, setRoles] = useState([])
 
@@ -23,8 +25,8 @@ export default function CreateActivity({ handleCreateClose }) {
   } = useForm({ mode: "onChange" });
 
   const fetchEntities = async () => {
-    const data = await getEntities()
-    setEntities(data.data)
+    const data = await getEntities(0, 10000)
+    setEntities(data.data.documents)
   }
 
   const fetchRoles = async () => {
@@ -39,14 +41,18 @@ export default function CreateActivity({ handleCreateClose }) {
 
   const onSubmit = async (data) => {
     try {
+      console.log(data)
+      console.log(data.role)
       const result = await createUser(data)
       console.log(result)
 
+      ToastSuccess("usuario creado exitosamente")
       reset()
+      handleCreateClose()
     } catch (error) {
       console.log(error)
 
-      /* ToastError("error al crear semillero") */
+      ToastError("error al crear usuario")
     }
   }
 
@@ -150,30 +156,33 @@ export default function CreateActivity({ handleCreateClose }) {
             </div>
           </div>
 
+          {
+            user.role.role <= 3 ?
+              <div>
+                <div>
+                  Seleccione Ente
+                </div>
 
-          <div>
-            <div>
-              Seleccione Ente
-            </div>
+                <select className="entity-select" {...register("entity", {
+                  required: 'seleccione el ente',
+                  pattern: {}
+                })} /* onChange={(e) => handleEntitySelect(e)} */>
 
-            <select className="entity-select" {...register("entity", {
-              required: 'seleccione el ente',
-              pattern: {}
-            })} /* onChange={(e) => handleEntitySelect(e)} */>
+                  <option value="" disabled selected>Seleccione el Ente</option>
+                  {
+                    entities.map((item, index) => {
+                      return <option key={item.name} value={item._id} >
+                        {item.name}
+                      </option>
+                    })
+                  }
+                </select>
+                <div>
+                  {errors.entityAux && <span className="error-message">{errors.entityAux.message}</span>}
+                </div>
+              </div> : ""
+          }
 
-              <option value="" disabled selected>Seleccione el Ente</option>
-              {
-                entities.map((item, index) => {
-                  return <option key={item.name} value={item._id} >
-                    {item.name}
-                  </option>
-                })
-              }
-            </select>
-            <div>
-              {errors.entityAux && <span className="error-message">{errors.entityAux.message}</span>}
-            </div>
-          </div>
 
 
           <div>
@@ -182,7 +191,7 @@ export default function CreateActivity({ handleCreateClose }) {
                 Telefono: <span className="required-thing">*</span>
               </label>
               <div>
-                <input className="add-input-2" maxLength={11} type="number" placeholder='nombre de la actividad'
+                <input className="add-input-2" maxLength={11} type="number" placeholder='telefono'
                   {...register("phone", {
                     required: 'ingrese telefono',
                   })}

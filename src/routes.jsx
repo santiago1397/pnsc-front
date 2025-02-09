@@ -96,10 +96,15 @@ export const ProtectedRoute = () => {
             <DirectionsBusIcon fontSize="small" />
             Cargar Actividad
           </button>
-          <button onClick={() => navigate(`/users`)}>
-            <GroupIcon fontSize="small" />
-            Usuarios
-          </button>
+          {
+            user.role.role === 5  ?
+               "" : 
+               <button onClick={() => navigate(`/users`)}>
+                <GroupIcon fontSize="small" />
+                Usuarios
+              </button>
+          }
+
           {
             user.role.role <= 2 ?
               <>

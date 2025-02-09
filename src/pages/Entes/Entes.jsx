@@ -124,8 +124,8 @@ export default function Entes() {
             </thead>
             <tbody>
               {
-                entities.map((element) => {
-                  return <tr >
+                entities.map((element, index) => {
+                  return <tr key={index}>
                     <td>
                       {element.name}
                     </td>
