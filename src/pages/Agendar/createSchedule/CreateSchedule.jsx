@@ -113,9 +113,9 @@ export default function CreateActivity({ handleCreateClose }) {
       console.log(data)
       var res = {}
       if (user.role.role > 2) {
-        res = await createSchedule({ ...data, entity: user.entity, user: user.email })
+        res = await createSchedule({ ...data, entity: user.entity })
       } else {
-        res = await createSchedule({ ...data, user: user.email })
+        res = await createSchedule({ ...data })
       }
 
       ToastSuccess(res.data)
@@ -509,6 +509,7 @@ export default function CreateActivity({ handleCreateClose }) {
                   <option value="" disabled selected>Seleccione el tipo</option>
                   <option key="private"  >Privado</option>
                   <option key="public"  >Público</option>
+                  <option key="community"  >Comunidad</option>
                 </select>
                 <div>
                   {errors?.schools?.[index]?.type && <span className="error-message">{errors?.schools?.[index]?.type.message}</span>}

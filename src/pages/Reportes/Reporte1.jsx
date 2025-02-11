@@ -5,6 +5,7 @@ import { getGeneralReport, getYearlyReport, downloadDatabase, getRepeatedStudent
 import { getStateReport } from '../../api/reports';
 import { createEntity, getEntities } from '../../api/entity';
 import { useAuth } from "../../context/authContext";
+import GeneralReport from './GeneralReport';
 
 export default function Reporte1() {
 
@@ -31,6 +32,8 @@ export default function Reporte1() {
 
   const fetchingReport = async (entity = selectedEntity) => {
     const response = await getGeneralReport(entity);
+
+    console.log(response.data)
     setReport(response.data.report)
     setGeneral(response.data.general)
   }
@@ -47,7 +50,7 @@ export default function Reporte1() {
   }
 
   const fetchingEntities = async () => {
-    const data = await getEntities(0,10000)
+    const data = await getEntities(0, 10000)
     setEntities(data.data.documents)
   }
 
@@ -74,35 +77,7 @@ export default function Reporte1() {
   }, []);
 
 
-  const data = {
-    labels: ['Femenino', 'Masculino'],
-    datasets: [
-      {
-        label: '# of Votes',
-        data: [general.f, general.m],
-        backgroundColor: [
-          'rgba(247, 51, 94, 0.92)',
-          'rgba(54, 163, 235, 0.94)',
-        ],
-      },
-    ],
-  };
 
-  const options = {
-    responsive: true, // Ensure responsiveness
-    maintainAspectRatio: false, // Allows flexibility in resizing
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      tooltip: {
-        enabled: true,
-      },
-    },
-    layout: {
-      padding: 20, // Optional: Adds padding to the chart area
-    },
-  };
 
   return (
     <>
@@ -214,7 +189,7 @@ export default function Reporte1() {
               {general.f}
             </td>
             <td>
-              {general.t}
+              {general.total}
             </td>
           </tr>
         </table>
@@ -224,62 +199,11 @@ export default function Reporte1() {
       <br />
       <br />
       <br />
-      <div>
-        <h3>
-          Reporte por Actividades
-        </h3>
-      </div>
-      <div style={{ display: 'flex' }}>
-        <div>
+      <GeneralReport report={report} general={general} />
 
-          <table className="responsive-table-reportes">
-            <thead>
-              <tr>
-                <th>Actividades</th>
-                <th className="small">Cantidad de Profesores</th>
-                <th className="small">Cantidad de Niñas</th>
-                <th className="small">Cantidad de Niños</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-
-              {report.map((element) => {
-                return <tr >
-                  <td>{element.name}</td>
-                  <td>{element.p}</td>
-                  <td>{element.f}</td>
-                  <td>{element.m}</td>
-                  <td>{element.t}</td>
-                </tr>
-              })}
-              {
-                general && <tr>
-                  <td><b>Total</b></td>
-                  <td><b>{general.p}</b></td>
-                  <td><b>{general.f}</b></td>
-                  <td><b>{general.m}</b></td>
-                  <td><b>{general.t}</b></td>
-                </tr>
-              }
-
-
-            </tbody>
-          </table>
-        </div>
-        <div >
-          <div style={{ position: 'relative', width: '320px', height: '300px' }}>
-            <Pie data={data} options={options} />
-          </div>
-
-        </div>
-      </div>
 
 
       <div>
-
-
-
 
         <br />
         <br />
@@ -288,35 +212,11 @@ export default function Reporte1() {
             Reporte por Municipios y Parroquias atendidas
           </h3>
         </div>
-        {
-          /* user.role.role <= 2 ?
-            <div>
-              <div>
-                Selecciona Ente:
-              </div>
-              <select onChange={handleSelectedEntity}>
-                <option value="" disabled selected>Seleccione el Ente</option>
-                {
-                  entities.map((item) => {
-                    return <option key={item.name} value={item.name} >
-                      {item.name}
-                    </option>
-                  })
-                }
 
-              </select>
-            </div>
-            :
-            "" */
-        }
 
         <table className="report-table-2">
-          {/* <tr>
-            <th>
-              Reporte por Municipios y Parroquias atendidas
-            </th>
-          </tr> */}
-          
+
+
           <tr>
             {report2.municipios.map((item) => {
               return (

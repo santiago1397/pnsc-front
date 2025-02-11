@@ -6,6 +6,7 @@ export const getYearlyReport = async (entity) => axios.get(`/report/yearly/${ent
 export const getStateReport = async (entity) => axios.get(`/report/state/${entity}`);
 export const getRepeatedStudentsReport = async (entity) => axios.get(`/report/repeated/${entity}`);
 export const searchStudent = async (searchTerm) => axios.get(`/report/students/${searchTerm}`);
+export const getEntitiesStatus = async (skip, limit, sortBy) => axios.get(`/report/entities/status/${skip}/${limit}/${sortBy}`);
 
 
 

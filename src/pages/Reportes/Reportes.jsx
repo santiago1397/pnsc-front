@@ -6,6 +6,7 @@ import { getGeneralReport, getYearlyReport, downloadDatabase } from '../../api/r
 import { useAuth } from "../../context/authContext";
 import Reporte1 from './Reporte1';
 import Reporte2 from './Reporte2';
+import Reporte3 from './Reporte3';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -13,7 +14,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function Reportes() {
   const { user } = useAuth();
 
-  const [reportSection, setReportSection] = useState(0)
+  const [reportSection, setReportSection] = useState(1)
 
   const downloadDB = async () => {
     await downloadDatabase()
@@ -37,15 +38,22 @@ export default function Reportes() {
       {
         user.role.role <= 2 ?
           <div>
-            <button onClick={() => setReportSection(0)}>reporte 1</button>
-            <button onClick={() => setReportSection(1)}>reporte 2</button>
+            <button onClick={() => setReportSection(1)}>Reporte 1</button>
+            <button onClick={() => setReportSection(2)}>Buscar Atendidos</button>
+            <button onClick={() => setReportSection(3)}>Seguimiento</button>
           </div>
 
           : ""
       }
 
       {
-        reportSection === 0 ? <Reporte1 /> : <Reporte2 />
+        reportSection === 1 ? <Reporte1 /> : ""
+      }
+      {
+        reportSection === 2 ? <Reporte2 /> : ""
+      }
+      {
+        reportSection === 3 ? <Reporte3 /> : ""
       }
 
     </div>

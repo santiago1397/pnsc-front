@@ -14,12 +14,15 @@ import { getEntities } from '../../api/entity.js';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import "./agendar.css"
 import ViewSchedule from './viewSchedule/ViewSchedule.jsx';
+import CreateVisit from './createVisit/CreateVisit.jsx';
+import { getPdfReport } from '../../api/schedule.js';
 
 export default function Agendar() {
 
   const { user } = useAuth();
 
 
+  const [openLoad, setOpenLoad] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -49,6 +52,13 @@ export default function Agendar() {
 
   const handleDetailsClose = async () => {
     setOpenDetails(false);
+  }
+
+  const handleLoadClose = async () => {
+    setOpenLoad(false);
+    fetchingSchedules(0, postsPerPage, selectedEntity)
+    setCurrentPage(1)
+
   }
 
   const handleCreateClose = async () => {
@@ -112,6 +122,16 @@ export default function Agendar() {
     <div>
 
       <Modal
+        open={openLoad}
+        onClose={handleLoadClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+
+        <CreateVisit handleLoadClose={handleLoadClose} selectedSchedule={selectedSchedule} />
+      </Modal>
+
+      <Modal
         open={openDetails}
         onClose={handleDetailsClose}
         aria-labelledby="modal-modal-title"
@@ -156,12 +176,16 @@ export default function Agendar() {
         <h1>
           ACTIVIDADES PROGRAMADAS
         </h1>
+
         <button onClick={() => setOpenCreate(true)}>
           Agendar Ruta
         </button>
+
       </div>
       <div className="activity-list">
-
+        <button onClick={async ()=> await getPdfReport(user.entity.name)}>
+          Descargar Reporte
+        </button>
         {user.role.role <= 2 ?
           <div>
             Seleccione Entidad:
@@ -255,16 +279,16 @@ export default function Agendar() {
                           <VisibilityIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
-                      {/* <Tooltip title="Boton de Modificar" onClick={(e) => { e.stopPropagation(); setOpenEdit(true); setUserDetails(item) }}>
-                  <IconButton size="small" aria-label="edit" >
-                    <ModeEditIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip> */}
                       <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setSelectedSchedule(element) }}>
                         <IconButton size="small" aria-label="delete" >
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
+                    </td>
+                    <td>
+                      <button onClick={(e) => { e.stopPropagation(); setOpenLoad(true); setSelectedSchedule(element) }}>
+                        REPORTAR
+                      </button>
                     </td>
                   </tr>
                 })

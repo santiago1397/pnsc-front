@@ -19,18 +19,8 @@ import { createVisit, verifyStudents } from '../../../api/visits.js';
 
 
 // falta la funcion para cerrar el modal
-export default function CreateVisit({ handleCreateClose }) {
+export default function CreateVisit({ handleLoadClose, selectedSchedule }) {
   const { user } = useAuth();
-  const [categories, setCategories] = useState([])
-  const [entities, setEntities] = useState([])
-  const [schedules, setSchedules] = useState([])
-  const [activities, setActivities] = useState([])
-  const [schools, setSchools] = useState([])
-  const [flag, setFlag] = useState(false)
-
-
-  const [subcategories, setSubCategories] = useState([])
-
   const {
     watch,
     register,
@@ -41,7 +31,9 @@ export default function CreateVisit({ handleCreateClose }) {
     control,
     setError,
     formState: { errors, values },
-  } = useForm({ mode: "onChange" });
+  } = useForm({
+    mode: "onChange",
+  });
 
   const { fields: arraySchools, append: appendSchools, remove: removeSchools } = useFieldArray({
     control,
@@ -61,75 +53,6 @@ export default function CreateVisit({ handleCreateClose }) {
     defaultValue: [{ entity: user.entity, activityDate: getValues("activityDate") }],
   });
 
-  const handleEntitySelect = (e) => {
-    setValue("entityAux", e.target.value)
-    setValue("entity", entities[e.target.value])
-  }
-
-
-  const handleScheduleSelected = (e) => {
-    const index = e.target.value
-    console.log(
-      schedules[index].activityPlace
-    )
-    setFlag(true)
-    setValue("details.agendedLink", schedules[index]._id)
-    setValue("details.activityName", schedules[index].activityName)
-    setValue("details.activityPlace", schedules[index].activityPlace)
-    setValue("details.activityDate", schedules[index].activityDate)
-    setValue("details.schools", schedules[index].schools)
-    setValue("details.category", schedules[index].category)
-
-  }
-
-  const handleActivitySelected = (e) => {
-    const index = e.target.value
-    setValue("ludicActivity", activities[index])
-  }
-
-  const fetchCategories = async () => {
-    const data = await getCategories()
-    setCategories(data.data)
-  }
-
-  const fetchEntities = async () => {
-    const data = await getEntities(0, 10000)
-    /* console.log(data.data) */
-    setEntities(data.data.documents)
-  }
-
-  const fetchingSchedules = async () => {
-    try {
-      const data = await getSchedules()
-      setSchedules(data.data)
-      /* console.log(data) */
-    } catch (error) {
-      /* console.log(error) */
-    }
-  }
-
-  const handleActivitySelect = (e) => {
-    const lmao = categories.filter((element) => element.name == e.target.value)
-    setSubCategories(lmao[0].subcategories)
-  }
-
-  const fetchActivities = async () => {
-    try {
-      const data = await getActivities(0, 1000)
-      setActivities(data.data.documents)
-      console.log(data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const setDefaultEntity = async () => {
-    const index = entities.findIndex((element) => element.name === user.entity.name)
-
-    setValue("entityAux", index)
-    setValue("entity", user.entity)
-
-  }
 
   const { currentStepIndex, step, steps, isFirstStep, isLastStep, next, back, } = useMultistepForm([
     <Information
@@ -141,7 +64,8 @@ export default function CreateVisit({ handleCreateClose }) {
       arraySchools={arraySchools}
       appendSchools={appendSchools}
       removeSchools={removeSchools}
-      handleCreateClose={handleCreateClose}
+      handleLoadClose={handleLoadClose}
+      selectedSchedule={selectedSchedule}
     />,
     <Students
       register={register}
@@ -152,7 +76,7 @@ export default function CreateVisit({ handleCreateClose }) {
       removeStudents={removeStudents}
       setValue={setValue}
       getValues={getValues}
-      handleCreateClose={handleCreateClose}
+      handleLoadClose={handleLoadClose}
       setError={setError}
     />,
     <Teachers
@@ -164,24 +88,18 @@ export default function CreateVisit({ handleCreateClose }) {
       removeTeacher={removeTeacher}
       setValue={setValue}
       getValues={getValues}
-      handleCreateClose={handleCreateClose}
+      handleLoadClose={handleLoadClose}
       setError={setError}
     />
   ])
 
 
-  useEffect(() => {
-    fetchingSchedules()
-    fetchCategories()
-    fetchEntities()
-    setDefaultEntity()
-    fetchActivities()
-  }, [])
+
 
   const onSubmit = async (data) => {
     try {
       console.log(data)
-      
+
       if(currentStepIndex == 0){
         appendSchools({})
         removeSchools(arraySchools.length )
@@ -218,7 +136,7 @@ export default function CreateVisit({ handleCreateClose }) {
       const res = await createVisit(data)
 
       ToastSuccess("Visita cargada con exito")
-      handleCreateClose()
+      handleLoadClose()
       reset()
     } catch (error) {
       console.log(error)
@@ -232,6 +150,8 @@ export default function CreateVisit({ handleCreateClose }) {
 
   }
 
+ 
+
   return (
     <div className="place-modal-visit">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -241,7 +161,7 @@ export default function CreateVisit({ handleCreateClose }) {
           </h2>
 
           <div>
-            <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleCreateClose() }}>
+            <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleLoadClose() }}>
               <IconButton type="button" size="small" aria-label="edit" >
                 <CloseIcon fontSize="small" />
               </IconButton>

@@ -89,7 +89,7 @@ export default function Login() {
 
               </button>
             </div>
-
+            <p><Link to='/forgot-password'>Recuperar contraseña</Link> </p>
           </div>
 
         </form>
