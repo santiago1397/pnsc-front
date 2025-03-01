@@ -15,7 +15,7 @@
 
 .entity-select{
     box-sizing: border-box;
-    width: 100%;
+    width: 250px !important;
     overflow: hidden;
 }
 
@@ -23,6 +23,25 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+}
+
+.adduser-btn{
+    width: 250px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--iteractive-color);
+    color: black;
+    cursor: pointer;
+}
+
+.adduser-inputs input,select {
+    width: 250px !important;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 10px;
+    color: var(--font-color)
 }
 
 .add-input-2{

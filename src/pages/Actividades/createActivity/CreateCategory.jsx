@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form';
 import './createActivity.css'
 import { ToastError } from '../../../components/toasts/ToastError.jsx'
@@ -29,7 +29,7 @@ export default function CreateCategory({ handleCreateClose }) {
         name: "Ingrese Nombre de Categoría Aquí",
         subs: []
       })
-      
+
       handleCreateClose()
 
       ToastSuccess("Categoría creada exitosamente")
@@ -42,10 +42,23 @@ export default function CreateCategory({ handleCreateClose }) {
   }
 
   return (
-    <div className="place-modal">
-      <h2>
-        Crear categoría Nueva:
-      </h2>
+    <div className="schedule-place-modal">
+
+      <div className="schedule-top">
+        <h2>
+          CREAR CATEGORÍA NUEVA:
+        </h2>
+
+        <div>
+          <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleCreateClose() }}>
+            <IconButton type="button" size="small" aria-label="edit" sx={{ color: 'red' }} >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </div>
+      <div className="divider">
+      </div>
       <NestedList list={data} setList={setData} />
       <button onClick={onSubmit}>
         Submit

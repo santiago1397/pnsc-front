@@ -21,13 +21,13 @@ export default function Reportes() {
   }
 
   return (
-    <div>
+    <div className="reports-wrapper">
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <h1>Reportes</h1>
+        <h1 style={{fontSize: '40px'}}>REPORTES</h1>
 
         {
           user.role.role <= 2 ?
-            <button onClick={downloadDB}>
+            <button className="download-db" onClick={downloadDB}>
               Descargar BD
             </button>
             :

@@ -10,7 +10,7 @@ import { createCategory } from '../../../api/category.js';
 
 
 // falta la funcion para cerrar el modal
-export default function EditCategory({activity, handleCreateClose }) {
+export default function EditCategory({activity, handleEditClose }) {
 
   const [data, setData] = useState(activity)
 
@@ -30,10 +30,23 @@ export default function EditCategory({activity, handleCreateClose }) {
   }
 
   return (
-    <div className="place-modal">
-      <h2>
-        Crear categoría Nueva:
-      </h2>
+    <div className="schedule-place-modal">
+
+      <div className="schedule-top">
+        <h2>
+          EDITAR CATEGORÍA:
+        </h2>
+
+        <div>
+          <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleEditClose() }}>
+            <IconButton type="button" size="small" aria-label="edit" sx={{ color: 'red' }} >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </div>
+      <div className="divider">
+      </div>
       <NestedList list={data} setList={setData} />
       <button onClick={onSubmit}>
         Submit

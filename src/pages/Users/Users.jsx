@@ -69,7 +69,7 @@ export default function Users() {
 
   const fetchingEntities = async () => {
     try {
-      const data = await getEntities(0,10000)
+      const data = await getEntities(0, 10000)
       setEntities(data.data.documents)
       console.log(data)
     } catch (error) {
@@ -133,15 +133,20 @@ export default function Users() {
         <DeleteUser user={selectedUser} handleDeleteClose={handleDeleteClose} />
       </Modal>
 
-
       <div className="activities-top">
-        <h1>
-          USUARIOS
-        </h1>
-        <button onClick={() => setOpenCreate(true)}>
+        <div>
+          <h1>
+            USUARIOS
+          </h1>
+          <p className="description">
+          </p>
+        </div>
+        <button className="add-button" onClick={() => setOpenCreate(true)}>
           Crear Usuario
         </button>
+
       </div>
+
       <div className="activity-list">
 
         {user.role.role <= 2 ?
@@ -164,12 +169,7 @@ export default function Users() {
           : ""}
 
 
-
-        <div className="pagination">
-          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
-        </div>
-
-        <div>
+        <div className="table-wrapper">
           <table className="responsive-table">
             <thead>
               <tr>
@@ -196,12 +196,12 @@ export default function Users() {
                     <td>
                       <Tooltip title="Boton de Modificar" onClick={(e) => { e.stopPropagation(); setOpenEdit(true); setSelectedUser(element) }}>
                         <IconButton size="small" aria-label="edit" >
-                          <ModeEditIcon fontSize="small" />
+                          <ModeEditIcon sx={{ color: 'var(--font-color)' }} fontSize="small" />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setSelectedUser(element) }}>
                         <IconButton size="small" aria-label="delete" >
-                          <DeleteIcon fontSize="small" />
+                          <DeleteIcon sx={{ color: 'var(--font-color)' }} fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </td>
@@ -215,7 +215,26 @@ export default function Users() {
 
 
         <div className="pagination">
-          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
+          <Pagination sx={{
+            '& .MuiPagination-ul': { justifyContent: 'center' },
+            '& .MuiPaginationItem-root': { color: 'var(--iteractive-color)' },
+            '& .Mui-selected': { backgroundColor: 'var(--iteractive-color) !important', color: 'black' },
+            '& .MuiPaginationItem-page': {
+              minWidth: 30,
+              height: 30,
+              borderRadius: '5px',
+              margin: '0 5px',
+            },
+            '& .MuiPaginationItem-root:hover': { backgroundColor: '#eee', color: 'black' },
+            '& .MuiPaginationItem-previousNext:hover': { backgroundColor: '#eee', color: 'var(--iteractive-color)' },
+            '& .MuiPaginationItem-previousNext': {
+              color: 'var(--iteractive-color)'
+            }
+          }}
+            count={Math.ceil(total / postsPerPage)}
+            page={currentPage}
+            onChange={paginate}
+          />
         </div>
       </div>
     </div>

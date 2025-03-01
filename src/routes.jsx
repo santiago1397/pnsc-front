@@ -18,15 +18,18 @@ import BusinessIcon from '@mui/icons-material/Business';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import "./App.css"
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
     flexGrow: 1,
     display: "flex",
-    height: "auto",
+    margin: "0px",
+    height: "100vh",
     justifyContent: 'start',
+    boxSizing: "border-box",
     alignItems: 'start',
+    backgroundColor: 'var(--primary-color)',
     padding: theme.spacing(1),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
@@ -50,6 +53,7 @@ export const ProtectedRoute = () => {
   if (loading) return <h1>Loading...</h1>;
   if (!isAuthenticated && !loading) return <Navigate to="/login" replace />;
 
+  const [currentPage, setCurrentPage] = useState(0)
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -70,36 +74,47 @@ export const ProtectedRoute = () => {
         display: 'flex', // Add Flexbox display
         flexDirection: 'column', // Set vertical direction
         justifyContent: 'space-between', // Justify content vertically
-        background: "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 25%, rgba(215,216,219,1) 27%, rgba(185,186,192,1) 30%)",
+        background: "var(--secondary-color)",
       },
     }}
       variant="persistent"
       anchor="left"
       open={open}
       onClose={toggleDrawer(false)}>
-      <div>
+      <div className="nav-wrapper">
 
-        <IconButton onClick={toggleDrawer(false)}>
-          <ChevronLeftIcon />
-        </IconButton>
+
+
+        <div className="logo-hiddebtn">
+          <img className="nav-logo" src="./logo_semillero_1.svg" alt="logo-semillero" />
+          <IconButton onClick={toggleDrawer(false)} /* sx={{ border: '1px solid white' }} */>
+            <ChevronLeftIcon sx={{ color: 'white' }} />
+          </IconButton>
+        </div>
 
         <div>
-          <img className="nav-logo" src="./logo_semillero_1.svg" alt="logo-semillero" />
+          <h3>
+            SISTEMA PNSC
+          </h3>
+
+          <div className="separator">
+
+          </div>
         </div>
 
         <div className="Navlinks">
-          <button className="navlink" onClick={() => navigate(`/schedule`)}>
+          <button className={currentPage == 0? "selected-page" : ""} onClick={() => {navigate(`/schedule`); setCurrentPage(0)}}>
             <CalendarMonthIcon fontSize="small" />
             Programar Actividad
           </button>
-          <button onClick={() => navigate(`/visits`)}>
+          <button className={currentPage == 1? "selected-page" : ""} onClick={() => {navigate(`/visits`); setCurrentPage(1)}}>
             <DirectionsBusIcon fontSize="small" />
             Cargar Actividad
           </button>
           {
-            user.role.role === 5  ?
-               "" : 
-               <button onClick={() => navigate(`/users`)}>
+            user.role.role === 5 ?
+              "" :
+              <button className={currentPage == 2? "selected-page" : ""} onClick={() => {navigate(`/users`); setCurrentPage(2)}}>
                 <GroupIcon fontSize="small" />
                 Usuarios
               </button>
@@ -108,11 +123,11 @@ export const ProtectedRoute = () => {
           {
             user.role.role <= 2 ?
               <>
-                <button onClick={() => navigate(`/activities`)}>
+                <button className={currentPage == 3? "selected-page" : ""} onClick={() => {navigate(`/activities`); setCurrentPage(3)}}>
                   <LightbulbIcon fontSize="small" />
                   Categorías
                 </button>
-                <button onClick={() => navigate(`/entity`)}>
+                <button className={currentPage == 4? "selected-page" : ""} onClick={() => {navigate(`/entity`); setCurrentPage(4)}}>
                   <BusinessIcon fontSize="small" />
                   Entes
                 </button>
@@ -120,25 +135,23 @@ export const ProtectedRoute = () => {
               : ""
           }
 
-          <button onClick={() => navigate(`/reports`)}>
+          <button className={currentPage == 5? "selected-page" : ""} onClick={() => {navigate(`/reports`); setCurrentPage(5)}}>
             <AssessmentIcon fontSize="small" />
             Reportes
           </button>
-          <button onClick={() => logout()}>
+          <button  onClick={() => logout()}>
             <LogoutIcon fontSize="small" />
             Salir
           </button>
         </div>
       </div>
-      <div>
-        <img className="navbar-img" src="inagenSB_Semillero__02.png" alt="navbar-img" />
-      </div>
+
     </Drawer>
-    <Main open={open}>
+    <Main open={open} sx={{ display: 'flex', overflow: 'auto' }}>
       <Button onClick={toggleDrawer(true)} sx={{ ...(open && { display: 'none' }) }}>
         <MenuIcon />
       </Button>
-      <div style={{ flexGrow: "1" }}>
+      <div style={{ flexGrow: "1", backgroundColor: "var(--primary-color)", boxSizing: "border-box", height: "100vh" }}>
         <Outlet />
       </div>
 

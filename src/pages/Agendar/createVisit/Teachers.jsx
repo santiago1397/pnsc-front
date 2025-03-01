@@ -65,16 +65,17 @@ export default function Teachers({ register, errors, arrayTeachers, appendTeache
         <h4>
           Docentes Participantes:
         </h4>
-        
 
+        <div className="load-students-options">
+          <button className="load-single-student" type="button" onClick={() => appendTeacher({})}>
+            Agregar Docente
+          </button>
+        </div>
 
-        <button type="button" onClick={() => appendTeacher({})}>
-          Agregar Docente
-        </button>
       </div>
 
       <div className="students-container">
-        <table className="students-responsive-table">
+        <table className="students-responsive-table-2">
           <thead>
             <tr >
               <th colspan="7">
@@ -205,7 +206,7 @@ export default function Teachers({ register, errors, arrayTeachers, appendTeache
                   getValues={getValues}
                 />
                 <td>
-                  <button type="button" onClick={() => removeStudents(index)}>
+                  <button className="delete-student-button" type="button" onClick={() => removeStudents(index)}>
                     Eliminar
                   </button>
                 </td>

@@ -86,30 +86,37 @@ export default function Students({ register, errors, arrayStudents, appendStuden
   return (
     <div>
       <div className="twofields ">
-        <h4>
+
+        <h3>
           Estudiantes Atendidos:
-        </h4>
-        <button type="button" onClick={downloadExcel}>
-          Descargar formato de carga
-        </button>
+        </h3>
 
-        {isLoading ?
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <div className="loader"></div>
-          </div>
+        <div className="load-students-options">
+          <button className="download-format" type="button" onClick={downloadExcel}>
+            Descargar formato de carga
+          </button>
 
-          : ""}
+          {isLoading ?
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div className="loader"></div>
+            </div>
 
-        <input type="file" accept=".xlsx,.ods" onChange={(e) => LoadStudents(e)} />
+            : ""}
+
+          <>
+            <label className="excel-load" htmlFor="fileInput" >Cargar desde Excel</label> <br />
+            <input disabled={isLoading} className="excel-load-input" id="fileInput" type="file" accept=".xlsx" onChange={(e) => LoadStudents(e)} />
+          </>
 
 
-        <button type="button" onClick={() => appendStudent({})}>
-          Agregar Estudiante
-        </button>
+          <button className="load-single-student" type="button" onClick={() => appendStudent({})}>
+            Agregar Estudiante
+          </button>
+        </div>
       </div>
 
       <div className="students-container" /* style={{ overflow: 'auto' }} */>
-        <table className="students-responsive-table">
+        <table className="students-responsive-table-2">
           <thead>
             <tr >
               <th colspan="14">
@@ -396,7 +403,7 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                 {/* from here need to fix */}
 
                 <td>
-                  <button type="button" onClick={() => removeStudents(index)}>
+                  <button className="delete-student-button" type="button" onClick={() => removeStudents(index)}>
                     Eliminar
                   </button>
                 </td>

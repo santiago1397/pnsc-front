@@ -119,7 +119,7 @@ export default function Agendar() {
   }, [])
 
   return (
-    <div>
+    <div className="schedule-background">
 
       <Modal
         open={openLoad}
@@ -173,49 +173,56 @@ export default function Agendar() {
 
 
       <div className="activities-top">
-        <h1>
-          ACTIVIDADES PROGRAMADAS
-        </h1>
+        <div>
+          <h1>
+            ACTIVIDADES PROGRAMADAS
+          </h1>
+          <p className="description">
+            Bienvenido al módulo de actividades programadas. Añade tus actividades y consulta tu agenda para alcanzar tus metas.
+          </p>
+        </div>
 
-        <button onClick={() => setOpenCreate(true)}>
-          Agendar Ruta
+        <button className="add-button" onClick={() => setOpenCreate(true)}>
+          Programar Actividad
         </button>
 
       </div>
       <div className="activity-list">
-        <button onClick={async ()=> await getPdfReport(user.entity.name)}>
-          Descargar Reporte
-        </button>
-        {user.role.role <= 2 ?
-          <div>
-            Seleccione Entidad:
-            <select className=""
-              onChange={handleEntityChange}
-            >
-              <option value="TODOS" selected>TODOS</option>
-              {
-                entities.map((item, index) => {
-                  return <option key={item.id} value={item.name} >
-                    {item.name}
-                  </option>
-                })
-              }
+        <div className="options"> 
+          <button className="download-report-btn" onClick={async () => await getPdfReport(user.entity.name)}>
+            Descargar Reporte
+          </button>
+          {user.role.role <= 2 ?
+            <div className="entity-filter">
+              Filtro:
+              <select className=""
+                onChange={handleEntityChange}
+              >
+                <option value="TODOS" selected>TODOS</option>
+                {
+                  entities.map((item, index) => {
+                    return <option key={item.id} value={item.name} >
+                      {item.name}
+                    </option>
+                  })
+                }
 
-            </select>
-          </div>
-          : ""}
-
-
-        <div className="pagination">
-          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
+              </select>
+            </div>
+            : ""}
         </div>
 
-        <div>
+
+        {/* <div className="pagination">
+          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
+        </div> */}
+
+        <div className="table-wrapper">
           <table className="responsive-table">
             <thead>
               <tr>
                 <th>fecha</th>
-                <th>escuela</th>
+                {/* <th>escuela</th> */}
                 <th>nombre de la actividad</th>
                 <th>categoría</th>
                 <th>lugar de la actividad</th>
@@ -240,9 +247,9 @@ export default function Agendar() {
                     <td>
                       {DateTime.fromISO(element.activityDate).toFormat('yyyy-LL-dd')}
                     </td>
-                    <td>
+                    {/* <td>
                       {element.schools[0]?.name}
-                    </td>
+                    </td> */}
                     <td>
                       {element.activityName}
                     </td>
@@ -276,23 +283,25 @@ export default function Agendar() {
                     <td>
                       <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDetails(true); setSelectedSchedule(element) }}>
                         <IconButton size="small" aria-label="delete" >
-                          <VisibilityIcon fontSize="small" />
+                          <VisibilityIcon sx={{ color: 'var(--font-color)' }} fontSize="small" />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setSelectedSchedule(element) }}>
                         <IconButton size="small" aria-label="delete" >
-                          <DeleteIcon fontSize="small" />
+                          <DeleteIcon sx={{ color: 'var(--font-color)' }} fontSize="small" />
                         </IconButton>
                       </Tooltip>
                     </td>
                     <td>
-                      <button onClick={(e) => { e.stopPropagation(); setOpenLoad(true); setSelectedSchedule(element) }}>
+                      <button className="report-button" onClick={(e) => { e.stopPropagation(); setOpenLoad(true); setSelectedSchedule(element) }}>
                         REPORTAR
                       </button>
                     </td>
                   </tr>
                 })
               }
+
+
             </tbody>
           </table >
         </div>
@@ -301,7 +310,26 @@ export default function Agendar() {
 
 
         <div className="pagination">
-          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
+          <Pagination sx={{
+            '& .MuiPagination-ul': { justifyContent: 'center' },
+            '& .MuiPaginationItem-root': { color: 'var(--iteractive-color)' },
+            '& .Mui-selected': { backgroundColor: 'var(--iteractive-color) !important', color: 'black' },
+            '& .MuiPaginationItem-page': {
+              minWidth: 30,
+              height: 30,
+              borderRadius: '5px',
+              margin: '0 5px'
+            },
+            '& .MuiPaginationItem-root:hover': { backgroundColor: '#eee', color: 'black' },
+            '& .MuiPaginationItem-previousNext:hover': { backgroundColor: '#eee', color: 'var(--iteractive-color)' },
+            '& .MuiPaginationItem-previousNext': {
+              color: 'var(--iteractive-color)'
+            }
+          }}
+            count={Math.ceil(total / postsPerPage)}
+            page={currentPage}
+            onChange={paginate}
+          />
         </div>
       </div>
     </div>

@@ -14,3 +14,10 @@
     padding: 10px 50px;
     box-sizing: border-box;
 }
+
+.download-excel{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--iteractive-color);
+    cursor: pointer
+}

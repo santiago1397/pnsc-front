@@ -25,31 +25,24 @@ export default function DeleteActivity({ handleDeleteClose, selectedVisit }) {
 
 
   return (
-    <div className="place-modal">
-      <div >
+    <div className="schedule-place-modal">
+      <div className="delete-dialog">
         <div>
           <h2>
             ¿Seguro que desea borrar esta Visita?
           </h2>
-
-          <div>
-            <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleDeleteClose() }}>
-              <IconButton type="button" size="small" aria-label="edit" >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </div>
         </div>
-        <div>
-          <button className="adduser-btn" onClick={deleting}>
+        <div className="delete-options">
+          <button className="yes-button" onClick={deleting}>
             Si
           </button>
-          <button className="adduser-btn">
+          <button className="no-button" onClick={() => handleDeleteClose()}>
             No Borrar
           </button>
         </div>
 
       </div>
     </div>
+
   )
 }

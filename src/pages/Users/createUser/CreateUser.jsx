@@ -57,22 +57,27 @@ export default function CreateActivity({ handleCreateClose }) {
   }
 
   return (
-    <div className="place-modal">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="activities-title">
-          <h2>
-            CREAR USUARIO
-          </h2>
+    <div className="schedule-place-modal">
 
-          <div>
-            <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleCreateClose() }}>
-              <IconButton type="button" size="small" aria-label="edit" >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </div>
+      <div className="schedule-top">
+        <h2>
+          CREAR USUARIO
+        </h2>
+
+        <div>
+          <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleCreateClose() }}>
+            <IconButton type="button" size="small" aria-label="edit" sx={{ color: 'red' }} >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </div>
+      </div>
 
+      <div className="divider">
+      </div>
+
+      
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="adduser-inputs">
           <div className="adduser-input">
             <label>

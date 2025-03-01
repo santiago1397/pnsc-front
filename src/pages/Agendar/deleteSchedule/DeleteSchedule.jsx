@@ -5,7 +5,7 @@ import { Tooltip, IconButton, inputAdornmentClasses } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { deleteSchedule } from '../../../api/schedule.js';
 
-export default function DeleteSchedule({selectedSchedule, handleDeleteClose }) {
+export default function DeleteSchedule({ selectedSchedule, handleDeleteClose }) {
 
   const deleting = async () => {
     try {
@@ -23,26 +23,18 @@ export default function DeleteSchedule({selectedSchedule, handleDeleteClose }) {
 
 
   return (
-    <div className="place-modal">
-      <div >
+    <div className="schedule-place-modal">
+      <div className="delete-dialog">
         <div>
           <h2>
-            ¿Seguro que desea borrar este Ente?
+            ¿Seguro que desea borrar esta visita agendada?
           </h2>
-
-          <div>
-            <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleDeleteClose() }}>
-              <IconButton type="button" size="small" aria-label="edit" >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </div>
         </div>
-        <div>
-          <button className="adduser-btn" onClick={deleting}>
+        <div className="delete-options">
+          <button className="yes-button" onClick={deleting}>
             Si
           </button>
-          <button className="adduser-btn">
+          <button className="no-button" onClick={() => handleDeleteClose()}>
             No Borrar
           </button>
         </div>

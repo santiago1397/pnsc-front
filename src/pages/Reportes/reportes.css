@@ -90,3 +90,15 @@
   padding: 2px;
 }
 
+.reports-wrapper{
+  padding: 10px;
+  color: var(--font-color);
+}
+
+.download-db{
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--iteractive-color);
+  color: black;
+  cursor: pointer;
+}

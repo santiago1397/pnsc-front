@@ -5,6 +5,8 @@
     gap: 5px;
     flex-wrap: wrap;
     box-sizing: border-box;
+    justify-content: space-between;
+    
     
 }
 
@@ -13,7 +15,12 @@
     border: none;
     font-weight: bold;
     font-size: 12px;
-    flex: 1;
     padding: 10px 5px;
     border-radius: 5px;
+}
+
+.dptcontainer select{
+    margin-bottom: 20px;
+    box-sizing: border-box !important;
+    width: 250px !important;
 }

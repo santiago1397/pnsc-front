@@ -106,18 +106,22 @@ export default function Actividades() {
       </Modal>
 
 
+
       <div className="activities-top">
-        <h1>
-          ACTIVIDADES LÚDICAS
-        </h1>
-        <button onClick={() => setOpenCreate(true)}>
-          Crear Actividad
+        <div>
+          <h1>
+            CATEGORÍAS
+          </h1>
+          <p className="description">
+          </p>
+        </div>
+        <button className="add-button" onClick={() => setOpenCreate(true)}>
+          Crear categoría
         </button>
       </div>
+
       <div className="activity-list">
-        <div className="pagination">
-          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
-        </div>
+
 
         <div>
           <table className="responsive-table">
@@ -129,7 +133,7 @@ export default function Actividades() {
               </tr>
             </thead>
             <tbody>
-              {activities.map((element,index) => {
+              {activities.map((element, index) => {
                 return <tr key={index}>
                   <td>
                     {element.name}
@@ -137,12 +141,12 @@ export default function Actividades() {
                   <td>
                     <Tooltip title="Boton de Modificar" onClick={(e) => { e.stopPropagation(); setOpenEdit(true); setSelectedActivity(element) }}>
                       <IconButton size="small" aria-label="edit" >
-                        <ModeEditIcon fontSize="small" />
+                        <ModeEditIcon sx={{ color: 'var(--font-color)' }} fontSize="small" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); console.log(element); setSelectedActivity(element) }}>
                       <IconButton size="small" aria-label="delete" >
-                        <DeleteIcon fontSize="small" />
+                        <DeleteIcon sx={{ color: 'var(--font-color)' }} fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   </td>
@@ -157,7 +161,26 @@ export default function Actividades() {
 
 
         <div className="pagination">
-          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
+          <Pagination sx={{
+            '& .MuiPagination-ul': { justifyContent: 'center' },
+            '& .MuiPaginationItem-root': { color: 'var(--iteractive-color)' },
+            '& .Mui-selected': { backgroundColor: 'var(--iteractive-color) !important', color: 'black' },
+            '& .MuiPaginationItem-page': {
+              minWidth: 30,
+              height: 30,
+              borderRadius: '5px',
+              margin: '0 5px',
+            },
+            '& .MuiPaginationItem-root:hover': { backgroundColor: '#eee', color: 'black' },
+            '& .MuiPaginationItem-previousNext:hover': { backgroundColor: '#eee', color: 'var(--iteractive-color)' },
+            '& .MuiPaginationItem-previousNext': {
+              color: 'var(--iteractive-color)'
+            }
+          }}
+            count={Math.ceil(total / postsPerPage)}
+            page={currentPage}
+            onChange={paginate}
+          />
         </div>
       </div>
     </div>

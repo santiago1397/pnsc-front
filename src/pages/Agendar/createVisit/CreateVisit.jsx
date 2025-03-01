@@ -18,6 +18,7 @@ import { Tooltip, IconButton, inputAdornmentClasses } from '@mui/material';
 import { createVisit, verifyStudents } from '../../../api/visits.js';
 
 
+
 // falta la funcion para cerrar el modal
 export default function CreateVisit({ handleLoadClose, selectedSchedule }) {
   const { user } = useAuth();
@@ -100,9 +101,9 @@ export default function CreateVisit({ handleLoadClose, selectedSchedule }) {
     try {
       console.log(data)
 
-      if(currentStepIndex == 0){
+      if (currentStepIndex == 0) {
         appendSchools({})
-        removeSchools(arraySchools.length )
+        removeSchools(arraySchools.length)
       }
 
       /* Cambio de paso */
@@ -150,28 +151,32 @@ export default function CreateVisit({ handleLoadClose, selectedSchedule }) {
 
   }
 
- 
+
 
   return (
-    <div className="place-modal-visit">
+    <div className="schedule-place-modal">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="visit-title">
-          <h2>
-            REPORTAR VISITA REALIZADA
-          </h2>
+      <div className="schedule-top">
+        <h2>
+          REPORTAR VISITA REALIZADA
+        </h2>
 
-          <div>
-            <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleLoadClose() }}>
-              <IconButton type="button" size="small" aria-label="edit" >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </div>
+        <div>
+          <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleLoadClose() }}>
+            <IconButton type="button" size="medium" aria-label="close" sx={{ color: 'red' }}>
+              <CloseIcon fontSize="medium" />
+            </IconButton>
+          </Tooltip>
         </div>
-        <div className="visits-divider"></div>
+      </div>
+
+
+        <div className="divider">
+        </div>
 
         {step}
-        <div className="visits-divider"></div>
+        <div className="divider">
+        </div>
 
 
 

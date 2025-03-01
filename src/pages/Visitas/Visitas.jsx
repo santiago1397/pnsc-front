@@ -163,39 +163,40 @@ export default function Visitas() {
         <h1>
           ACTIVIDADES CARGADAS
         </h1>
-        <button onClick={() => setOpenCreate(true)}>
+        {/* <button onClick={() => setOpenCreate(true)}>
           Reportar Actividad
-        </button>
+        </button> */}
       </div>
       <div className="activity-list">
+        <div className="options">
 
-        <div>
-          TOTAL: {total}
-        </div>
 
-        {user.role.role <= 2 ?
-          <div>
-            Seleccione Entidad:
-            <select className=""
-              onChange={handleEntityChange}
-            >
-              <option value="TODOS" selected>TODOS</option>
-              {
-                entities.map((item, index) => {
-                  return <option key={item.id} value={item.name} >
-                    {item.name}
-                  </option>
-                })
-              }
-
-            </select>
+          <div >
+            TOTAL: {total}
           </div>
-          : ""}
-        <div className="pagination">
-          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
+
+          {user.role.role <= 2 ?
+            <div>
+              Seleccione Entidad:
+              <select className=""
+                onChange={handleEntityChange}
+              >
+                <option value="TODOS" selected>TODOS</option>
+                {
+                  entities.map((item, index) => {
+                    return <option key={item.id} value={item.name} >
+                      {item.name}
+                    </option>
+                  })
+                }
+
+              </select>
+            </div>
+            : ""}
         </div>
 
-        <div>
+
+        <div className="table-wrapper"> 
           <table className="responsive-table">
             <thead>
               <tr>
@@ -262,7 +263,7 @@ export default function Visitas() {
                     <td>
                       <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDetails(true); setSelectedVisit(element) }}>
                         <IconButton size="small" aria-label="delete" >
-                          <VisibilityIcon fontSize="small" />
+                          <VisibilityIcon sx={{ color: 'var(--font-color)' }} fontSize="small" />
                         </IconButton>
                       </Tooltip>
 
@@ -270,7 +271,7 @@ export default function Visitas() {
                         user.role.role <= 2 ?
                           <Tooltip title="Boton de Borrar" onClick={(e) => { e.stopPropagation(); setOpenDelete(true); setSelectedVisit(element) }}>
                             <IconButton size="small" aria-label="delete" >
-                              <DeleteIcon fontSize="small" />
+                              <DeleteIcon sx={{ color: 'var(--font-color)' }} fontSize="small" />
                             </IconButton>
                           </Tooltip> : ""
                       }
@@ -288,7 +289,26 @@ export default function Visitas() {
 
 
         <div className="pagination">
-          <Pagination count={Math.ceil(total / postsPerPage)} page={currentPage} onChange={paginate} />
+          <Pagination sx={{
+            '& .MuiPagination-ul': { justifyContent: 'center' },
+            '& .MuiPaginationItem-root': { color: 'var(--iteractive-color)' },
+            '& .Mui-selected': { backgroundColor: 'var(--iteractive-color) !important', color: 'black' },
+            '& .MuiPaginationItem-page': {
+              minWidth: 30,
+              height: 30,
+              borderRadius: '5px',
+              margin: '0 5px'
+            },
+            '& .MuiPaginationItem-root:hover': { backgroundColor: '#eee', color: 'black' },
+            '& .MuiPaginationItem-previousNext:hover': { backgroundColor: '#eee', color: 'var(--iteractive-color)' },
+            '& .MuiPaginationItem-previousNext': {
+              color: 'var(--iteractive-color)'
+            }
+          }}
+            count={Math.ceil(total / postsPerPage)}
+            page={currentPage}
+            onChange={paginate}
+          />
         </div>
       </div>
     </div>

@@ -70,3 +70,104 @@
     width: 50px;
     /* Adjust the width as needed */
 }
+
+.excel-load {
+    padding: 5px 5px;
+    background-color: var(--iteractive-color);
+    color: black;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.excel-load-input{
+    display: none;
+}
+
+.load-students-options{
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.download-format{
+    padding: 5px 5px;
+    background-color: var(--iteractive-color);
+    color: black;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+}
+
+.load-single-student{
+    padding: 5px 5px;
+    background-color: var(--iteractive-color);
+    color: black;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+}
+
+
+.students-responsive-table-2 {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.students-responsive-table-2 td,
+.students-responsive-table-2 th {
+    padding: 5px;
+    border: 1px solid var(--font-color);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.students-responsive-table-2 input, select{
+    width: 160px !important;
+    font-family: 'Roboto', sans-serif !important; 
+    font-size: 13px !important;
+    padding: 5px !important;
+    height: 35px !important;
+    width: 150px !important;
+    border: 1px solid var(--secondary-color);
+    border-radius: 2px !important;
+    background-color: var(--secondary-color);
+    color: var(--font-color);
+    box-sizing: border-box;
+}
+
+.delete-student-button{
+    background-color: var(--iteractive-color);
+    color: black;
+    padding: 4px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+
+.button-wrapper{
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.back-button{
+    background-color: transparent;
+    color: var(--iteractive-color);
+    border: 1px solid var(--iteractive-color);
+    border-radius: 4px;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.next-button{
+    background-color: var(--iteractive-color);
+    color: black;
+    border: 1px solid var(--iteractive-color);
+    border-radius: 4px;
+    padding: 5px 15px;
+    cursor: pointer;
+}

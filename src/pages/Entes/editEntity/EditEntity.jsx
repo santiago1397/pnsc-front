@@ -5,6 +5,7 @@ import { ToastSuccess } from '../../../components/toasts/ToastSuccess.jsx'
 import { Tooltip, IconButton, inputAdornmentClasses } from '@mui/material';
 import { editEntity } from '../../../api/entity.js';
 import CloseIcon from '@mui/icons-material/Close';
+import './editEntity.css'
 
 
 //necesito traer los valores por defecto
@@ -42,23 +43,26 @@ export default function EditEntity({ handleEditClose, selectedEntity }) {
 
 
   return (
-    <div className="place-modal">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <h2>
-            EDITAR ENTE
-          </h2>
+    <div className="schedule-place-modal">
 
-          <div>
-            <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleEditClose() }}>
-              <IconButton type="button" size="small" aria-label="edit" >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </div>
+      <div className="schedule-top">
+        <h2>
+          EDITAR ENTE:
+        </h2>
+
+        <div>
+          <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleEditClose() }}>
+            <IconButton type="button" size="small" aria-label="edit" sx={{ color: 'red' }} >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </div>
+      </div>
+      <div className="divider">
+      </div>
 
-        <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="adduser-inputs">
           <div className="adduser-input">
             <label>
               Nombre del Ente: <span className="required-thing">*</span>
