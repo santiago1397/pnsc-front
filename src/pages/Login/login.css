@@ -3,10 +3,9 @@
   height: 100vh;
 }
 
-.login-container
-input,
+.login-container input,
 select {
-  font-family: 'Roboto', sans-serif !important; 
+  font-family: 'Roboto', sans-serif !important;
   font-size: 16px !important;
   padding: 10px !important;
   height: 40px !important;
@@ -110,7 +109,42 @@ select {
   color: var(--font-color);
 }
 
-.forgot-password a{
+.forgot-password a {
   text-decoration: none;
   color: var(--font-color);
 }
+
+
+/* LOADER */
+.loader {
+  border: 4px solid rgba(0, 0, 0, .1);
+  border-left-color: transparent;
+  border-radius: 50%;
+}
+
+.loader {
+  border: 4px solid rgba(0, 0, 0, .1);
+  border-left-color: transparent;
+  width: 30px;
+  height: 30px;
+}
+
+.loader {
+  border: 4px solid white;
+  border-left-color: transparent;
+  width: 25px;
+  height: 25px;
+  animation: spin89345 1s linear infinite;
+}
+
+@keyframes spin89345 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* LOADER END */

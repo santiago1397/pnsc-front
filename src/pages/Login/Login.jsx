@@ -75,8 +75,18 @@ export default function Login() {
 
           <div className="login-button">
             <button>
-              INGRESAR
+
+              {
+                isLoading ?
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <div className="loader"></div>
+                  </div>
+                  :
+                  "Ingresar"
+              }
             </button>
+
+
           </div>
 
           <div className="forgot-password">
