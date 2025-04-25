@@ -12,13 +12,14 @@ export default function Reporte1() {
 
 
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false)
   const [report, setReport] = useState([])
   const [general, setGeneral] = useState({ f: 0, m: 0 })
   const [repeated, setRepeated] = useState([])
 
   const [report2, setReport2] = useState({ municipios: [] })
   const [entities, setEntities] = useState([])
-  const [selectedEntity, setSelectedEntity] = useState(user.entity.name)
+  const [selectedEntity, setSelectedEntity] = useState(user.role.role < 2 ? "TODOS" : user.entity.name)
 
   const [yearlyReport, setYearlyReport] = useState([])
 
@@ -31,11 +32,14 @@ export default function Reporte1() {
   }
 
   const fetchingReport = async (entity = selectedEntity) => {
+    setIsLoading(true)
     const response = await getGeneralReport(entity);
 
     console.log(response.data)
     setReport(response.data.report)
     setGeneral(response.data.general)
+    setIsLoading(false)
+
   }
 
   const fetchingYearlyReport = async (entity = selectedEntity) => {
@@ -55,6 +59,7 @@ export default function Reporte1() {
   }
 
   const handleSelectedEntity = async (e) => {
+    
     fetchingRepeatedStudentsReport(e.target.value)
     setSelectedEntity(e.target.value)
     fetchingInfo(e.target.value)
@@ -70,10 +75,8 @@ export default function Reporte1() {
   }, []);
 
   useEffect(() => {
-
     fetchingYearlyReport()
     fetchingReport()
-
   }, []);
 
 
@@ -81,227 +84,231 @@ export default function Reporte1() {
 
   return (
     <>
-      {
-        user.role.role <= 2 ?
-          <div>
+      {!isLoading ? <>
+        {
+
+          user.role.role <= 2 ?
             <div>
-              Selecciona Ente:
+              <div>
+                Selecciona Ente:
+              </div>
+              <select onChange={handleSelectedEntity}>
+                <option value="" disabled selected>Seleccione el Ente</option>
+                <option value="TODOS" >
+                  TODOS
+                </option>
+                {
+                  entities.map((item) => {
+                    return <option key={item.name} value={item.name} >
+                      {item.name}
+                    </option>
+                  })
+                }
+
+              </select>
             </div>
-            <select onChange={handleSelectedEntity}>
-              <option value="" disabled selected>Seleccione el Ente</option>
-              <option value="TODOS" >
-                TODOS
-              </option>
-              {
-                entities.map((item) => {
-                  return <option key={item.name} value={item.name} >
-                    {item.name}
-                  </option>
-                })
-              }
+            :
+            ""
+        }
+        <br />
+        <div>
+          <h3>
+            Reporte Mensual
+          </h3>
+        </div>
+        <div>
+          <table className="responsive-table-reportes">
+            <thead>
+              <tr>
+                {
+                  yearlyReport.map((element) => {
+                    return <th colSpan={3}>
+                      {element.month}
+                    </th>
+                  })
+                }
+              </tr>
+              <tr style={{ fontSize: '10px', padding: '0px' }}>
+                {
+                  yearlyReport.map((element) => {
+                    return <>
+                      <th style={{ backgroundColor: 'rgba(247, 51, 94, 0.92)' }}>
+                        F
+                      </th>
+                      <th style={{ backgroundColor: 'rgba(54, 163, 235, 0.94)' }}>
+                        M
+                      </th>
+                      <th>
+                        T
+                      </th>
+                    </>
+                  })
+                }
+              </tr>
+            </thead>
+            <tbody>
 
-            </select>
-          </div>
-          :
-          ""
-      }
-      <br />
-      <div>
-        <h3>
-          Reporte Mensual
-        </h3>
-      </div>
-      <div>
-        <table className="responsive-table-reportes">
-          <thead>
+              <tr style={{ fontSize: '10px', padding: '0px' }}>
+                {
+                  yearlyReport.map((element) => {
+                    return <>
+                      <td >
+                        {element.f}
+                      </td>
+                      <td >
+                        {element.m}
+                      </td>
+                      <td >
+                        {element.total}
+                      </td>
+                    </>
+                  })
+                }
+              </tr>
+
+
+            </tbody>
+          </table>
+          <table className="responsive-table-total-mensual">
+            <tr >
+              <th colSpan={3}>
+                Acumulado Total
+              </th>
+            </tr>
             <tr>
-              {
-                yearlyReport.map((element) => {
-                  return <th colSpan={3}>
-                    {element.month}
-                  </th>
-                })
-              }
+              <td>
+                F
+              </td>
+              <td>
+                M
+              </td>
+              <td>
+                T
+              </td>
             </tr>
-            <tr style={{ fontSize: '10px', padding: '0px' }}>
-              {
-                yearlyReport.map((element) => {
-                  return <>
-                    <th style={{ backgroundColor: 'rgba(54, 163, 235, 0.94)' }}>
-                      M
-                    </th>
-                    <th style={{ backgroundColor: 'rgba(247, 51, 94, 0.92)' }}>
-                      F
-                    </th>
-                    <th>
-                      T
-                    </th>
-                  </>
-                })
-              }
+            <tr>
+              <td>
+                {general.f}
+              </td>
+              <td >
+                {general.m}
+              </td>
+              <td>
+                {general.total}
+              </td>
             </tr>
-          </thead>
-          <tbody>
+          </table>
 
-            <tr style={{ fontSize: '10px', padding: '0px' }}>
-              {
-                yearlyReport.map((element) => {
-                  return <>
-                    <td >
-                      {element.m}
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <GeneralReport report={report} general={general} />
+
+
+
+        <div>
+
+          <br />
+          <br />
+          <div>
+            <h3>
+              Reporte por Municipios y Parroquias atendidas
+            </h3>
+          </div>
+
+
+          <table className="report-table-2">
+
+
+            <tr>
+              {report2.municipios.map((item) => {
+                return (
+                  <tr>
+                    <td>
+                      {item.name.label} <b>{item.students}</b>
                     </td>
-                    <td >
-                      {element.f}
+
+
+
+
+                    <td>
+                      {item.parish.map((element) => {
+                        return (
+
+                          <tr>
+                            <td className="parish">
+                              {element.name}
+                            </td>
+                            <td className="parish">
+                              {element.students}
+                            </td>
+                          </tr>
+
+                        )
+                      })}
                     </td>
-                    <td >
-                      {element.total}
-                    </td>
-                  </>
-                })
-              }
+
+                  </tr>
+                )
+              })}
+
             </tr>
-
-
-          </tbody>
-        </table>
-        <table className="responsive-table-total-mensual">
-          <tr >
-            <th colSpan={3}>
-              Acumulado Total
-            </th>
-          </tr>
-          <tr>
-            <td>
-              M
-            </td>
-            <td>
-              F
-            </td>
-            <td>
-              T
-            </td>
-          </tr>
-          <tr>
-            <td >
-              {general.m}
-            </td>
-            <td>
-              {general.f}
-            </td>
-            <td>
-              {general.total}
-            </td>
-          </tr>
-        </table>
-
-      </div>
-      <br />
-      <br />
-      <br />
-      <br />
-      <GeneralReport report={report} general={general} />
-
-
-
-      <div>
+          </table>
+        </div>
 
         <br />
         <br />
         <div>
           <h3>
-            Reporte por Municipios y Parroquias atendidas
+            Participantes de diversas actividades:
           </h3>
         </div>
-
-
-        <table className="report-table-2">
-
-
-          <tr>
-            {report2.municipios.map((item) => {
-              return (
-                <tr>
-                  <td>
-                    {item.name.label} <b>{item.students}</b>
-                  </td>
-
-
-
-
-                  <td>
-                    {item.parish.map((element) => {
-                      return (
-
-                        <tr>
-                          <td className="parish">
-                            {element.name}
-                          </td>
-                          <td className="parish">
-                            {element.students}
-                          </td>
-                        </tr>
-
-                      )
-                    })}
-                  </td>
-
-                </tr>
-              )
-            })}
-
-          </tr>
-        </table>
-      </div>
-
-      <br />
-      <br />
-      <div>
-        <h3>
-          Participantes de diversas actividades:
-        </h3>
-      </div>
-      <div>
-        <table className="responsive-table-reportes">
-          <thead>
-            <tr>
-              <th>
-                Cédula
-              </th>
-              <th>
-                Nombre
-              </th>
-              <th>
-                Apellido
-              </th>
-              <th>
-                Cantidad de Veces
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {repeated.map((element) => {
-              return (
-                <tr>
-                  <td>
-                    {element.student.ci}
-                  </td>
-                  <td>
-                    {element.student.name}
-                  </td>
-                  <td>
-                    {element.student.lastName}
-                  </td>
-                  <td>
-                    {element.times}
-                  </td>
-                </tr>
-              )
-            })
-            }
-          </tbody>
-        </table>
-      </div>
-
+        <div>
+          <table className="responsive-table-reportes">
+            <thead>
+              <tr>
+                <th>
+                  Cédula
+                </th>
+                <th>
+                  Nombre
+                </th>
+                <th>
+                  Apellido
+                </th>
+                <th>
+                  Cantidad de Veces
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {repeated.map((element) => {
+                return (
+                  <tr>
+                    <td>
+                      {element.student.ci}
+                    </td>
+                    <td>
+                      {element.student.name}
+                    </td>
+                    <td>
+                      {element.student.lastName}
+                    </td>
+                    <td>
+                      {element.times}
+                    </td>
+                  </tr>
+                )
+              })
+              }
+            </tbody>
+          </table>
+        </div>
+      </> : <div style={{ display: "flex", justifyContent: "center" }}>
+        <div className="loader"></div>
+      </div>}
     </>
   )
 }

@@ -169,8 +169,6 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                     <option value="" disabled selected>Seleccione la escuela</option>
 
                     {arraySchools.map((item, index) => {
-
-
                       return (<option value={item.name} >{item.name}</option>)
                     })}
 
@@ -245,9 +243,9 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                     <option value="4to grado" >4to grado</option>
                     <option value="5to grado" >5to grado</option>
                     <option value="6to grado" >6to grado</option>
-                    <option value="7mo grado" >7mo grado</option>
-                    <option value="8vo grado" >8vo grado</option>
-                    <option value="9no grado" >9no grado</option>
+                    <option value="7mo grado" >1er año</option>
+                    <option value="8vo grado" >2do año</option>
+                    <option value="9no grado" >3er año</option>
                     <option value="C. Div. 4to Año" >C. Div. 4to Año</option>
                     <option value="C. Div. 5to Año" >C. Div. 5to Año</option>
                     <option value="C. Téc. 4to Año" >C. Téc. 4to Año</option>

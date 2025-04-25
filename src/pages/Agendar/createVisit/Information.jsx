@@ -88,6 +88,8 @@ export default function Information({
 
   //esta monda esta fea, hay que arreglarlo
   const handleScheduleSelected = async () => {
+    
+
     const data = await getCategories(0, 10000)
     setCategories(data.data.documents)
 
@@ -104,10 +106,14 @@ export default function Information({
 
     const first = categories.filter((element) => element.name == selectedSchedule.category)
     setSubCategorieslvl1(first[0].subs)
-    const second = first[0].subs.filter((element) => element.name == selectedSchedule.subCategorylvl1)
-    setSubCategorieslvl2(second[0].subs)
-    const third = second[0].subs.filter((element) => element.name == selectedSchedule.subCategorylvl2)
-    setSubCategorieslvl3(third[0].subs)
+    if(selectedSchedule.subCategorylvl1 !== "" && selectedSchedule.subCategorylvl2 !== undefined){
+      const second = first[0].subs.filter((element) => element.name == selectedSchedule.subCategorylvl1)
+      setSubCategorieslvl2(second[0].subs)
+    }
+    if(selectedSchedule.subCategorylvl2 !== "" && selectedSchedule.subCategorylvl2 !== undefined){
+      const third = second[0].subs.filter((element) => element.name == selectedSchedule.subCategorylvl2)
+      setSubCategorieslvl3(third[0].subs)
+    }
 
     setValue("category", selectedSchedule.category)
     setValue("subCategorylvl1", selectedSchedule.subCategorylvl1)
@@ -122,6 +128,8 @@ export default function Information({
     for (let i = 0; i < arraySchools.length; i++) {
       removeSchools(0)
     }
+    console.log("hello?")
+    console.log(selectedSchedule.schools)
 
     setValue("schools", selectedSchedule.schools)
 
@@ -159,6 +167,7 @@ export default function Information({
     fetchCategories()
     fetchEntities()
     setDefaultEntity()
+    
     handleScheduleSelected()
 
     /* fetchActivities() */
@@ -459,7 +468,7 @@ export default function Information({
                   {...register("activityPlace.address", {
                     required: 'ingrese direccion del lugar de la actividad',
                     pattern: {
-                      value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ,\s]+$/, // Regex pattern for letters, numbers and spaces only
+                      value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,\s-]+$/, // Regex pattern for letters, numbers and spaces only
                       message: 'Solo se permiten letras, espacios y numeros'
                     }
                   })}

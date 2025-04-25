@@ -22,6 +22,7 @@ import { createVisit, verifyStudents } from '../../../api/visits.js';
 // falta la funcion para cerrar el modal
 export default function CreateVisit({ handleLoadClose, selectedSchedule }) {
   const { user } = useAuth();
+  const [duplicates, setDuplicates] = useState([]);
   const {
     watch,
     register,
@@ -35,6 +36,8 @@ export default function CreateVisit({ handleLoadClose, selectedSchedule }) {
   } = useForm({
     mode: "onChange",
   });
+
+  console.log(selectedSchedule.schools)
 
   const { fields: arraySchools, append: appendSchools, remove: removeSchools } = useFieldArray({
     control,
@@ -111,17 +114,24 @@ export default function CreateVisit({ handleLoadClose, selectedSchedule }) {
 
 
       /* Validaciones de Duplicados */
-      const nameSet = new Set();
-      const hasDuplicates = data.students.some(field => {
+      const nameSet = new Map();
+      let firstDuplicate = null;
+      const duplicates = []
+      const hasDuplicates = data.students.some((field, index) => {
         if (nameSet.has(field.ci)) {
-          console.log(field.ci)
+          const originalIndex = nameSet.get(field.ci);
+          setError(`students.${originalIndex}.ci`, { type: "manual", message: "El estudiante se encuentra duplicado" });
+          setError(`students.${index}.ci`, { type: "manual", message: "El estudiante se encuentra duplicado" })
+          firstDuplicate = field.ci; // Store the first duplicate
           return true;
         }
-        nameSet.add(field.ci);
+        nameSet.set(field.ci, index);
         return false;
       });
+
+      setDuplicates(duplicates)
       if (hasDuplicates) {
-        ToastError("hay estudiantes duplicados")
+        ToastError(`El estudiante de cedula: ${firstDuplicate} se encuentra duplicado.`)
         return
       }
 
@@ -156,19 +166,19 @@ export default function CreateVisit({ handleLoadClose, selectedSchedule }) {
   return (
     <div className="schedule-place-modal">
       <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="schedule-top">
-        <h2>
-          REPORTAR VISITA REALIZADA
-        </h2>
+        <div className="schedule-top">
+          <h2>
+            REPORTAR VISITA REALIZADA
+          </h2>
 
-        <div>
-          <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleLoadClose() }}>
-            <IconButton type="button" size="medium" aria-label="close" sx={{ color: 'red' }}>
-              <CloseIcon fontSize="medium" />
-            </IconButton>
-          </Tooltip>
+          <div>
+            <Tooltip title="cerrar" onClick={(e) => { e.stopPropagation(); handleLoadClose() }}>
+              <IconButton type="button" size="medium" aria-label="close" sx={{ color: 'red' }}>
+                <CloseIcon fontSize="medium" />
+              </IconButton>
+            </Tooltip>
+          </div>
         </div>
-      </div>
 
 
         <div className="divider">

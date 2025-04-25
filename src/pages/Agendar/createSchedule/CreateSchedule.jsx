@@ -173,7 +173,7 @@ export default function CreateActivity({ handleCreateClose }) {
                     {...register("activityName", {
                       required: 'ingrese nombre de la actividad',
                       pattern: {
-                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters, numbers and spaces only
+                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, 
                         message: 'Solo se permiten letras, espacios y numeros'
                       }
                     })}
@@ -213,7 +213,7 @@ export default function CreateActivity({ handleCreateClose }) {
                     {...register("studentSpected", {
                       required: 'ingrese la cantidad de estudiantes esperados',
                       pattern: {
-                        value: /^[0-9]+$/,  // Esta regex solo permite números enteros
+                        value: /^[0-9]+$/,  
                         message: 'Solo se permiten números'
                       }
                     })}
@@ -234,7 +234,7 @@ export default function CreateActivity({ handleCreateClose }) {
                     {...register("teachersExpected", {
                       required: 'ingrese la cantidad de profesores esperados',
                       pattern: {
-                        value: /^[0-9]+$/,  // Esta regex solo permite números enteros
+                        value: /^[0-9]+$/,  
                         message: 'Solo se permiten números'
                       }
                     })}
@@ -438,7 +438,7 @@ export default function CreateActivity({ handleCreateClose }) {
                     {...register("activityPlace.name", {
                       required: 'ingrese el nombre del lugar de la actividad',
                       pattern: {
-                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters, numbers and spaces only
+                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, 
                         message: 'Solo se permiten letras, espacios y numeros'
                       }
                     })}
@@ -460,7 +460,7 @@ export default function CreateActivity({ handleCreateClose }) {
                     {...register("activityPlace.address", {
                       required: 'ingrese direccion del lugar de la actividad',
                       pattern: {
-                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ,\s]+$/, // Regex pattern for letters, numbers and spaces only
+                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,\s-]+$/, 
                         message: 'Solo se permiten letras, espacios y numeros'
                       }
                     })}
