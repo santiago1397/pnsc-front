@@ -12,7 +12,7 @@ export const deleteSchedule = async (id) => axios.delete(`/schedule/${id}`);
 export const getPdfReport = async (entity) => {
 
 	try {
-		const response = await fetch(`${import.meta.env.VITE_API_URL}/schedule/${entity}`, { credentials: "include" })
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/scheduleReport/${entity}`, { credentials: "include" })
 		if (response.ok) {
 			const blob = await response.blob(); // Get the file data as a blob
 			const link = document.createElement('a');

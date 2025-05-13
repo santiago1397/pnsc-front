@@ -104,16 +104,19 @@ export default function Information({
     setValue("teachersExpected", selectedSchedule.teachersExpected)
     setValue("activityDate", new Date(selectedSchedule.activityDate).toISOString().split('T')[0])
 
-    const first = categories.filter((element) => element.name == selectedSchedule.category)
+    var first = categories.filter((element) => element.name == selectedSchedule.category)
     setSubCategorieslvl1(first[0].subs)
-    if (selectedSchedule.subCategorylvl1 !== "" && selectedSchedule.subCategorylvl2 !== undefined) {
-      const second = first[0].subs.filter((element) => element.name == selectedSchedule.subCategorylvl1)
+    var second
+    if (selectedSchedule.subCategorylvl1 !== "" && selectedSchedule.subCategorylvl1 !== undefined) {
+      second = first[0].subs.filter((element) => element.name == selectedSchedule.subCategorylvl1)
       setSubCategorieslvl2(second[0].subs)
     }
+    var third
     if (selectedSchedule.subCategorylvl2 !== "" && selectedSchedule.subCategorylvl2 !== undefined) {
-      const third = second[0].subs.filter((element) => element.name == selectedSchedule.subCategorylvl2)
+      third = second[0].subs.filter((element) => element.name == selectedSchedule.subCategorylvl2)
       setSubCategorieslvl3(third[0].subs)
     }
+    console.log("no llega o q")
 
     setValue("category", selectedSchedule.category)
     setValue("subCategorylvl1", selectedSchedule.subCategorylvl1)

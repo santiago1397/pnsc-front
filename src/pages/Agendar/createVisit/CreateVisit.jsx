@@ -151,15 +151,20 @@ export default function CreateVisit({ handleLoadClose, selectedSchedule }) {
         documentn1 = Date.now() + "_" + data.images[0].name
       }
       if (data.images[1]) {
+        console.log(data.images[1])
+        console.log(data.images[1].name)
         documentn2 = Date.now() + "_" + data.images[1].name
       }
 
-      console.log(data.images[1])
-      console.log(data.images[1].name)
 
-      const res = await createVisit({...data, images: [documentn1, documentn2]})
-      const image1 = await UploadImage(documentn1, data.images[0])
-      const image2 = await UploadImage(documentn2, data.images[1])
+
+      const res = await createVisit({ ...data, images: [documentn1, documentn2] })
+      if (data.images[0]) {
+        await UploadImage(documentn1, selectedSchedule.entity.name, data.images[0])
+      }
+      if (data.images[1]) {
+        await UploadImage(documentn2, selectedSchedule.entity.name, data.images[1])
+      }
 
       ToastSuccess("Visita cargada con exito")
       handleLoadClose()

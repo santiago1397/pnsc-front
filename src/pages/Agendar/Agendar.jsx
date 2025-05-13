@@ -189,7 +189,7 @@ export default function Agendar() {
       </div>
       <div className="activity-list">
         <div className="options"> 
-          <button className="download-report-btn" onClick={async () => await getPdfReport(user.entity.name)}>
+          <button className="download-report-btn" onClick={async () => await getPdfReport(selectedEntity || user.entity.name)}>
             Descargar Reporte
           </button>
           {user.role.role <= 2 ?
