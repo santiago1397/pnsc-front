@@ -225,7 +225,7 @@ export default function Visitas() {
                 visits.map((element) => {
                   return <tr /* className="activity-item" */>
                     <td>
-                      {DateTime.fromISO(element.activityDate).toFormat('yyyy-LL-dd')}
+                      {DateTime.fromISO(element.activityDate).toUTC().toFormat('yyyy-LL-dd')}
                     </td>
                     <td>
                       {element.activityName}

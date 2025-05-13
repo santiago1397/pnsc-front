@@ -37,17 +37,56 @@ export default function Students({ register, errors, arrayStudents, appendStuden
     const worksheet = workbook.Sheets[sheetName];
 
     const range = XLSX.utils.decode_range(worksheet['!ref']);
-    const startRow = 10; // Row 11 (0-indexed)
+    const startRow = 9; // Row 10 (0-indexed)
 
     if (range.s.r <= startRow) { // Only adjust if the data starts before row 11
       range.s.r = startRow;
       worksheet['!ref'] = XLSX.utils.encode_range(range);
     }
 
-    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 0 });
-    console.log(jsonData)
+    const newHeaders = {
+      "Escuela": "school",
+      "Nombres": "name",
+      "Apellidos": "lastName",
+      "Cédula de Identidad (si aplica)": "ci",
+      "Edad": "age",
+      "Sexo (Masculino o Femenino)": "gender",
+      "Grado que cursa": "grade",
+      "Posee algún tipo de discapacidad, enfermedad, alergía o condición": "disability",
+      "Dirección de vivienda": "address",
+      "Estado (Vivienda)": "state_aux",
+      "Municipio (Vivienda)": "municipality_aux",
+      "Parroquia (vivienda)": "parish_aux",
+      "Teléfono celular": "phone",
+      "Nombres Representante": "representativeName",
+      "Apellidos Representante": "representativeLastName",
+      "Cédula de Identidad": "representativeCI",
+      "Edad Representante": "representativeAge",
+      "Parentesco representante": "representativeKindred",
+      "Teléfono celular representante": "representativePhone",
+      "Teléfono laboral o alternativo representante": "representativePhone2",
+      "Email representante": "representativeEmail",
+      "Profesión y/o oficio representante": "representativeProfession",
+    }
 
-    //verifiying correct dpt
+    const jsonData1 = XLSX.utils.sheet_to_json(worksheet, { header: 0 });
+    console.log(jsonData1)
+
+    // transforming headers
+    const jsonData = jsonData1.map(item => {
+      const newItem = {};
+      for (const oldHeader in item) {
+        if (newHeaders.hasOwnProperty(oldHeader)) {
+          newItem[newHeaders[oldHeader]] = item[oldHeader];
+        } else {
+          // If an original header is not found in newHeaders, keep the original name
+          newItem[oldHeader] = item[oldHeader];
+        }
+      }
+      return newItem;
+    });
+
+    // verifiying correct dpt
     for (let i = 0; i < jsonData.length; i++) {
       try {
         const response = await validateDpt({ state: jsonData[i].state_aux, municipality: jsonData[i].municipality_aux, parish: jsonData[i].parish_aux })
@@ -65,7 +104,7 @@ export default function Students({ register, errors, arrayStudents, appendStuden
     }
 
     for (let i = 0; i < jsonData.length; i++) {
-      if (validateSchools(jsonData[i].school) === 0) {
+      if (validateSchools(jsonData[i].school) === 1) {
         setError(`students.${i}.school`, {
           type: "manual",
           message: "La escuela no esta registrada"
@@ -243,14 +282,14 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                     <option value="4to grado" >4to grado</option>
                     <option value="5to grado" >5to grado</option>
                     <option value="6to grado" >6to grado</option>
-                    <option value="7mo grado" >1er año</option>
-                    <option value="8vo grado" >2do año</option>
-                    <option value="9no grado" >3er año</option>
-                    <option value="C. Div. 4to Año" >C. Div. 4to Año</option>
-                    <option value="C. Div. 5to Año" >C. Div. 5to Año</option>
-                    <option value="C. Téc. 4to Año" >C. Téc. 4to Año</option>
-                    <option value="C. Téc. 5to Año" >C. Téc. 5to Año</option>
-                    <option value="C. Téc. 6to Año" >C. Téc. 6to Año</option>
+                    <option value="1er año" >1er año</option>
+                    <option value="2do año" >2do año</option>
+                    <option value="3er año" >3er año</option>
+                    <option value="C. Div. 4to año" >C. Div. 4to año</option>
+                    <option value="C. Div. 5to año" >C. Div. 5to año</option>
+                    <option value="C. Téc. 4to año" >C. Téc. 4to año</option>
+                    <option value="C. Téc. 5to año" >C. Téc. 5to año</option>
+                    <option value="C. Téc. 6to año" >C. Téc. 6to año</option>
                     <option value="Universitario" >Universitario</option>
                     <option value="Docente" >Docente</option>
                   </select>
@@ -306,8 +345,8 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                 <td>
                   <input style={{ width: "85px" }} {...register(`students.${index}.phone`, {
                     pattern: {
-                      value: /^\d{11,12}$/,
-                      message: "ingrese un numero valido"
+                      value: /^(?:(?:4(?:24|14|16|26|12)|2)\d{7}|0(?:4(?:24|14|16|26|12)|2)\d{7,8})$/,
+                      message: "ingrese un numero valido ej: 04126080650"
                     }
 
                   })} />
@@ -358,8 +397,8 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                 <td>
                   <input style={{ width: "85px" }} {...register(`students.${index}.representativePhone`, {
                     pattern: {
-                      value: /^\d{11,12}$/,
-                      message: "ingrese un numero valido"
+                      value: /^(?:(?:4(?:24|14|16|26|12)|2)\d{7}|0(?:4(?:24|14|16|26|12)|2)\d{7,8})$/,
+                      message: "ingrese un numero valido. ej: 04126080650"
                     }
 
                   })} />
@@ -370,8 +409,8 @@ export default function Students({ register, errors, arrayStudents, appendStuden
                 <td>
                   <input style={{ width: "85px" }} {...register(`students.${index}.representativePhone2`, {
                     pattern: {
-                      value: /^\d{11,12}$/,
-                      message: "ingrese un numero valido"
+                      value: /^(?:(?:4(?:24|14|16|26|12)|2)\d{7}|0(?:4(?:24|14|16|26|12)|2)\d{7,8})$/,
+                      message: "ingrese un numero valido ej: 04126080650"
                     }
 
                   })} />

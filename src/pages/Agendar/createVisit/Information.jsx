@@ -88,7 +88,7 @@ export default function Information({
 
   //esta monda esta fea, hay que arreglarlo
   const handleScheduleSelected = async () => {
-    
+
 
     const data = await getCategories(0, 10000)
     setCategories(data.data.documents)
@@ -106,11 +106,11 @@ export default function Information({
 
     const first = categories.filter((element) => element.name == selectedSchedule.category)
     setSubCategorieslvl1(first[0].subs)
-    if(selectedSchedule.subCategorylvl1 !== "" && selectedSchedule.subCategorylvl2 !== undefined){
+    if (selectedSchedule.subCategorylvl1 !== "" && selectedSchedule.subCategorylvl2 !== undefined) {
       const second = first[0].subs.filter((element) => element.name == selectedSchedule.subCategorylvl1)
       setSubCategorieslvl2(second[0].subs)
     }
-    if(selectedSchedule.subCategorylvl2 !== "" && selectedSchedule.subCategorylvl2 !== undefined){
+    if (selectedSchedule.subCategorylvl2 !== "" && selectedSchedule.subCategorylvl2 !== undefined) {
       const third = second[0].subs.filter((element) => element.name == selectedSchedule.subCategorylvl2)
       setSubCategorieslvl3(third[0].subs)
     }
@@ -167,7 +167,7 @@ export default function Information({
     fetchCategories()
     fetchEntities()
     setDefaultEntity()
-    
+
     handleScheduleSelected()
 
     /* fetchActivities() */
@@ -216,7 +216,7 @@ export default function Information({
                   {...register("activityName", {
                     required: 'ingrese nombre de la actividad',
                     pattern: {
-                      value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters, numbers and spaces only
+                      value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s-_]+$/, // Regex pattern for letters, numbers and spaces only
                       message: 'Solo se permiten letras, espacios y numeros'
                     }
                   })}
@@ -379,7 +379,7 @@ export default function Information({
                   {...register("description", {
                   })}
                 />
-                
+
                 <div>
                   {errors?.description?.name && <span className="error-message">{errors?.description?.name?.message}</span>}
                 </div>
@@ -398,7 +398,7 @@ export default function Information({
                   {...register("observation", {
                   })}
                 />
-                
+
                 <div>
                   {errors?.observation?.name && <span className="error-message">{errors?.observation?.name?.message}</span>}
                 </div>
@@ -406,6 +406,46 @@ export default function Information({
               </div>
             </div>
           </div>
+
+
+          <div className="inputs-2">
+            <div className="schedule-name-input">
+              <label>
+                Link de registro fotografico:
+              </label>
+              <div>
+                <input className="add-input-2" type="text"
+                  {...register("medialink", {
+                  })}
+                />
+                <div>
+                  {errors.medialink && <span className="error-message">{errors.medialink.message}</span>}
+                </div>
+
+              </div>
+            </div>
+
+
+            <div className="schedule-name-input">
+              <label>
+                Cargar Imagenes:
+              </label>
+              <div>
+                <input className="add-input-2" type="file" accept="image/*" multiple
+                  {...register("images", {
+                    validate: {
+                      maxLength: (files) => files.length <= 2 || "Maximo 2 imagenes",
+                    },
+                  })}
+                />
+                <div>
+                  {errors.images && <span className="error-message">{errors.images.message}</span>}
+                </div>
+
+              </div>
+            </div>
+          </div>
+
 
         </div>
       </div>
@@ -442,11 +482,11 @@ export default function Information({
               <div>
                 <input className="add-input-2" type="text" placeholder='nombre del sitio de la actividad'
                   minLength={4}
-                  maxLength={50}
+                  maxLength={120}
                   {...register("activityPlace.name", {
                     required: 'ingrese el nombre del lugar de la actividad',
                     pattern: {
-                      value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, // Regex pattern for letters, numbers and spaces only
+                      value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-\.]+$/, // Regex pattern for letters, numbers and spaces only
                       message: 'Solo se permiten letras, espacios y numeros'
                     }
                   })}
@@ -528,7 +568,7 @@ export default function Information({
                     <div>
                       <input
                         minLength={4}
-                        maxLength={50}
+                        maxLength={70}
                         {...register(`schools.${index}.name`, {
                           required: 'ingrese el nombre de la escuela',
                           pattern: {
@@ -577,7 +617,7 @@ export default function Information({
 
       </div>
 
-      
+
     </div>
   )
 }

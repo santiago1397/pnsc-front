@@ -245,7 +245,7 @@ export default function Agendar() {
                 schedules.map((element, index) => {
                   return <tr /* className="schedule-item" */ key={index}>
                     <td>
-                      {DateTime.fromISO(element.activityDate).toFormat('yyyy-LL-dd')}
+                      {DateTime.fromISO(element.activityDate).toUTC().toFormat('yyyy-LL-dd')}
                     </td>
                     {/* <td>
                       {element.schools[0]?.name}

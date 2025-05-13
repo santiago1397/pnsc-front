@@ -12,11 +12,15 @@ import { createCategory } from '../../../api/category.js';
 // falta la funcion para cerrar el modal
 export default function EditCategory({activity, handleEditClose }) {
 
+  console.log(activity)
   const [data, setData] = useState(activity)
 
 
   const onSubmit = async () => {
     try {
+      console.log(data)
+
+
       const result = await createCategory(data)
       console.log(result)
 

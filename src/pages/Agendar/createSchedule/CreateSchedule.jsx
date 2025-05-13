@@ -173,7 +173,7 @@ export default function CreateActivity({ handleCreateClose }) {
                     {...register("activityName", {
                       required: 'ingrese nombre de la actividad',
                       pattern: {
-                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, 
+                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s-_]+$/, 
                         message: 'Solo se permiten letras, espacios y numeros'
                       }
                     })}
@@ -434,11 +434,11 @@ export default function CreateActivity({ handleCreateClose }) {
                 <div>
                   <input className="add-input-2" type="text" placeholder='nombre del sitio de la actividad'
                     minLength={4}
-                    maxLength={50}
+                    maxLength={120}
                     {...register("activityPlace.name", {
                       required: 'ingrese el nombre del lugar de la actividad',
                       pattern: {
-                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/, 
+                        value: /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-\.]+$/, 
                         message: 'Solo se permiten letras, espacios y numeros'
                       }
                     })}
@@ -521,7 +521,7 @@ export default function CreateActivity({ handleCreateClose }) {
                       <div>
                         <input
                           minLength={4}
-                          maxLength={50}
+                          maxLength={70}
                           {...register(`schools.${index}.name`, {
                             required: 'ingrese el nombre de la escuela',
                             pattern: {

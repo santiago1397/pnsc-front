@@ -3,14 +3,14 @@ import { ToastError } from '../../../components/toasts/ToastError.jsx'
 import { ToastSuccess } from '../../../components/toasts/ToastSuccess.jsx'
 import { Tooltip, IconButton, inputAdornmentClasses } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { deleteActivity } from '../../../api/activities.js';
+import { deleteCategory } from '../../../api/category.js';
 
 export default function DeleteActivity({ activity, handleDeleteClose }) {
 
 
   const deleting = async () => {
     try {
-      const res = await deleteActivity(activity._id)
+      const res = await deleteCategory(activity._id)
       console.log(res.status)
 
       ToastSuccess("actividad eliminada exitosamente")

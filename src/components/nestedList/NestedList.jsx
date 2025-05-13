@@ -56,7 +56,11 @@ const NestedList = ({list, setList}) => {
   }
 
   const handleAddChild = (parentId, currentDepth = 1) => {
+    console.log(currentDepth)
+    console.log(parentId)
+
     if (parentId == list.id) {
+      console.log("omg")
       const newChild = { id: Date.now(), name: "Nueva Subcategoría", subs: [] }
       setList({ ...list, subs: [...list.subs, newChild] });
       return
@@ -64,6 +68,7 @@ const NestedList = ({list, setList}) => {
 
     const updatedchildren = list.subs.map((item) => {
       if (item.id === parentId) {
+        console.log("what")
         const newChild = { id: Date.now(), name: "Nueva Subcategoría", subs: [] };
         return {
           ...item,

@@ -16,6 +16,7 @@ import { useMultistepForm } from './usemultistep'
 import CloseIcon from '@mui/icons-material/Close';
 import { Tooltip, IconButton, inputAdornmentClasses } from '@mui/material';
 import { createVisit, verifyStudents } from '../../../api/visits.js';
+import { UploadImage } from '../../../api/images.js';
 
 
 
@@ -144,7 +145,21 @@ export default function CreateVisit({ handleLoadClose, selectedSchedule }) {
       const verification = await verifyStudents(data)
       console.log(verification)
 
-      const res = await createVisit(data)
+      var documentn1 = ""
+      var documentn2 = ""
+      if (data.images[0]) {
+        documentn1 = Date.now() + "_" + data.images[0].name
+      }
+      if (data.images[1]) {
+        documentn2 = Date.now() + "_" + data.images[1].name
+      }
+
+      console.log(data.images[1])
+      console.log(data.images[1].name)
+
+      const res = await createVisit({...data, images: [documentn1, documentn2]})
+      const image1 = await UploadImage(documentn1, data.images[0])
+      const image2 = await UploadImage(documentn2, data.images[1])
 
       ToastSuccess("Visita cargada con exito")
       handleLoadClose()

@@ -40,10 +40,20 @@ export default function ViewSchedule({ handleDetailsClose, selectedSchedule }) {
               <b>Entidad encargada:</b> {selectedSchedule.entity.name}
             </div>
             <div className="item">
-              <b>Fecha de la actividad:</b> {DateTime.fromISO(selectedSchedule.activityDate).toFormat('dd-LL-yyyy')}
+              <b>Fecha de la actividad:</b> {DateTime.fromISO(selectedSchedule.activityDate).toUTC().toFormat('dd-LL-yyyy')}
             </div>
             <div className="item">
-              <b>Fecha de planificada la actividad:</b> {DateTime.fromISO(selectedSchedule.createdAt).toFormat('dd-LL-yyyy')}
+              <b>Fecha de planificada la actividad:</b> {DateTime.fromISO(selectedSchedule.createdAt).toUTC().toFormat('dd-LL-yyyy')}
+            </div>
+
+            <div className="item">
+              <b>Estado del sitio de la actividad:</b> {selectedSchedule.activityPlace.state.label}
+            </div>
+            <div className="item">
+              <b>Municipio del sitio de la actividad:</b> {selectedSchedule.activityPlace.municipality.label}
+            </div>
+            <div className="item">
+              <b>Parroquia del sitio de la actividad:</b> {selectedSchedule.activityPlace.parish.label}
             </div>
 
           </div>

@@ -50,10 +50,20 @@ export default function ViewVisit({ handleDetailsClose, selectedVisit }) {
               <b>Entidad encargada:</b> {selectedVisit.entity.name}
             </div>
             <div className="item">
-              <b>Fecha de la actividad:</b> {DateTime.fromISO(selectedVisit.activityDate).toFormat('dd-LL-yyyy')}
+              <b>Fecha de la actividad:</b> {DateTime.fromISO(selectedVisit.activityDate).toUTC().toFormat('dd-LL-yyyy')}
             </div>
             <div className="item">
               <b>Fecha de planificada la actividad:</b> {DateTime.fromISO(selectedVisit.createdAt).toFormat('dd-LL-yyyy')}
+            </div>
+
+            <div className="item">
+              <b>Estado del sitio de la actividad:</b> {selectedVisit.activityPlace.state.label}
+            </div>
+            <div className="item">
+              <b>Municipio del sitio de la actividad:</b> {selectedVisit.activityPlace.municipality.label}
+            </div>
+            <div className="item">
+              <b>Parroquia del sitio de la actividad:</b> {selectedVisit.activityPlace.parish.label}
             </div>
 
           </div>
@@ -103,7 +113,7 @@ export default function ViewVisit({ handleDetailsClose, selectedVisit }) {
             </div>
 
             <div className="item">
-              <b>Estudiantes atendidos:</b> {selectedVisit.teachers}
+              <b>Profesores atendidos:</b> {selectedVisit.teachers}
             </div>
 
           </div>

@@ -22,6 +22,8 @@ export default function CreateCategory({ handleCreateClose }) {
 
   const onSubmit = async () => {
     try {
+      console.log(data)
+      
       const result = await createCategory(data)
       console.log(result)
       setData({
